@@ -57,7 +57,39 @@ void Introduce()
 
 void LoadDataFile(string fileName)
 {
-    cout << "LoadDataFile(" << fileName << ")\n";
+    ifstream inputFile;
+
+    inputFile.open(fileName);
+
+    if (!inputFile)
+    {
+        cout << "________________________________________________________________________________________________________________________________\n";
+        cout << "Error opening " << fileName << ".\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        inputFile.close();
+
+        return;
+    }
+
+    inputFile.seekg(0, ios::end);
+
+    size_t fileSize = inputFile.tellg();
+
+    inputFile.seekg(0, ios::beg);
+
+    if (fileSize == 0)
+    {
+        cout << "________________________________________________________________________________________________________________________________\n";
+        cout << fileName << " doesn't contain any data.\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        inputFile.close();
+
+        return;
+    }
+
+    // Implement loading in all customer data from file.
 }
 
 int GetValidChoice(int minimum, int maximum)
