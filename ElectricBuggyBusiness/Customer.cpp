@@ -1,8 +1,9 @@
 #include "Customer.h"
 
-Customer::Customer(vector<Purchase> purchaseVector, string firstName, string lastName, string streetAddress, string city, string state, string zipcode, string phoneNumber)
+int Customer::customerCount = 0;
+
+Customer::Customer(string firstName, string lastName, string streetAddress, string city, string state, string zipcode, string phoneNumber)
 {
-	this->purchaseVector = purchaseVector;
 	this->firstName = firstName;
 	this->lastName = lastName;
 	this->streetAddress = streetAddress;
@@ -11,5 +12,50 @@ Customer::Customer(vector<Purchase> purchaseVector, string firstName, string las
 	this->zipcode = zipcode;
 	this->phoneNumber = phoneNumber;
 
-	accountNumber = rand() % 9999 + 1;
+	customerCount++;
+	accountNumber = customerCount;
+}
+
+bool Customer::operator==(const Customer& otherCustomer)
+{
+	return accountNumber == otherCustomer.accountNumber;
+}
+
+void Customer::AddPurchase(Purchase purchase)
+{
+	purchaseVector.push_back(purchase);
+}
+
+void Customer::DisplayData() const
+{
+	cout << "________________________________________________________________________________________________________________________________\n";
+	cout << firstName << " " << lastName << "\n";
+	cout << streetAddress << "\n";
+	cout << city << ", " << state << ", " << zipcode << "\n";
+	cout << phoneNumber << "\n\n";
+	cout << "Account #" << accountNumber << "\n\n";
+
+	cout << "\tPurchases:\n\n";
+
+	for (const Purchase& purchase : purchaseVector)
+	{
+		cout << "\t________________________________\n";
+		cout << "\t" << purchase.GetItemName() << ": $" << purchase.GetItemCost() << "\n\n";
+		cout << "\t" << purchase.GetPurchaseDate() << "\n";
+		cout << "\t________________________________\n\n";
+	}
+	cout << "________________________________________________________________________________________________________________________________\n\n";
+}
+
+void Customer::SaveData(ofstream& outputFile) const
+{
+	if (!purchaseVector.empty())
+	{
+		for (const Purchase& purchase : purchaseVector)
+		{
+			outputFile << purchase.GetItemName() << "," << purchase.GetPurchaseDate() << ",";
+		}
+	}
+
+	outputFile << firstName << "," << lastName << "," << streetAddress << "," << city << "," << state << "," << zipcode << "," << phoneNumber;
 }

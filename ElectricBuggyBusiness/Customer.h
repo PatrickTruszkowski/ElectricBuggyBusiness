@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+#include <iomanip>
 #include <vector>
 #include <ctime>
 #include <fstream>
@@ -11,6 +13,8 @@ using namespace std;
 class Customer
 {
 private:
+	static int customerCount;
+
 	vector<Purchase> purchaseVector;
 	string firstName;
 	string lastName;
@@ -22,5 +26,11 @@ private:
 	int accountNumber;
 
 public:
-	Customer(vector<Purchase>, string, string, string, string, string, string, string);
+	Customer(string, string, string, string, string, string, string);
+
+	bool operator==(const Customer&);
+
+	void AddPurchase(Purchase);
+	void DisplayData() const;
+	void SaveData(ofstream&) const;
 };

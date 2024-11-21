@@ -13,4 +13,8 @@ private:
 
 public:
 	Purchase(string, string, float);
+
+	string GetItemName() const;
+	string GetPurchaseDate() const;
+	float GetItemCost() const;
 };
