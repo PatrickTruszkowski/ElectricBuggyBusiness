@@ -35,7 +35,7 @@ void Customer::DisplayData() const
 	cout << phoneNumber << "\n\n";
 	cout << "Account #" << accountNumber << "\n\n";
 
-	cout << "\tPurchases:\n\n";
+	cout << "\tPurchases:\n";
 
 	for (const Purchase& purchase : purchaseVector)
 	{

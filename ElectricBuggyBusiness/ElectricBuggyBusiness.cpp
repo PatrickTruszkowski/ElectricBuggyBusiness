@@ -7,6 +7,8 @@ using namespace std;
 
 void InitializeItems();
 void Introduce();
+void HandleDataSelection();
+bool CheckDataFile(string);
 void LoadDataFile(string);
 void SaveAllCustomerData();
 void DisplayMainMenu();
@@ -57,26 +59,73 @@ void Introduce()
 
     system("Pause");
 
-    cout << "________________________________________________________________________________________________________________________________\n";
-    cout << "Would you like to load default customer data or saved customer data?\n\n";
-    cout << "(1)\tDefault\n";
-    cout << "(2)\tSaved\n";
-    cout << "(3)\tNone\n";
-    cout << "________________________________________________________________________________________________________________________________\n\n";
+    HandleDataSelection();
+}
 
-    int choice = GetValidChoice(1, 3);
+void HandleDataSelection()
+{
+    bool hasDefaultData = CheckDataFile(DEFAULT_DATA_FILE_NAME);
+    bool hasSavedData = CheckDataFile(SAVED_DATA_FILE_NAME);
+    int choice;
 
-    if (choice == 1)
+    if (!hasDefaultData && !hasSavedData)
     {
-        LoadDataFile(DEFAULT_DATA_FILE_NAME);
+        system("CLS");
+
+        DisplayMainMenu();
+        HandleMainMenuSelection();
     }
-    else if (choice == 2)
+
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Would you like to load customer data?\n\n";
+
+    if (hasDefaultData && hasSavedData)
     {
-        LoadDataFile(SAVED_DATA_FILE_NAME);
+        cout << "(1)\tDefault Data\n";
+        cout << "(2)\tSaved Data\n";
+        cout << "(3)\tNone\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        choice = GetValidChoice(1, 3);
+
+        if (choice == 1)
+        {
+            LoadDataFile(DEFAULT_DATA_FILE_NAME);
+        }
+        else if (choice == 2)
+        {
+            LoadDataFile(SAVED_DATA_FILE_NAME);
+        }
+    }
+    else if (hasDefaultData)
+    {
+        cout << "(1)\tDefault Data\n";
+        cout << "(2)\tNone\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        choice = GetValidChoice(1, 2);
+
+        if (choice == 1)
+        {
+            LoadDataFile(DEFAULT_DATA_FILE_NAME);
+        }
+    }
+    else if (hasSavedData)
+    {
+        cout << "(1)\tSaved Data\n";
+        cout << "(2)\tNone\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        choice = GetValidChoice(1, 2);
+
+        if (choice == 1)
+        {
+            LoadDataFile(SAVED_DATA_FILE_NAME);
+        }
     }
 }
 
-void LoadDataFile(string fileName)
+bool CheckDataFile(string fileName)
 {
     ifstream inputFile;
 
@@ -84,13 +133,9 @@ void LoadDataFile(string fileName)
 
     if (!inputFile)
     {
-        cout << "________________________________________________________________________________________________________________________________\n";
-        cout << "Error opening \"" << fileName << "\".\n";
-        cout << "________________________________________________________________________________________________________________________________\n\n";
-
         inputFile.close();
 
-        return;
+        return false;
     }
 
     inputFile.seekg(0, ios::end);
@@ -101,14 +146,19 @@ void LoadDataFile(string fileName)
 
     if (fileSize == 0)
     {
-        cout << "________________________________________________________________________________________________________________________________\n";
-        cout << "\"" << fileName << "\" doesn't contain any data.\n";
-        cout << "________________________________________________________________________________________________________________________________\n\n";
-
         inputFile.close();
 
-        return;
+        return false;
     }
+
+    return true;
+}
+
+void LoadDataFile(string fileName)
+{
+    ifstream inputFile;
+
+    inputFile.open(fileName);
 
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Loading...\n\n";
@@ -172,12 +222,21 @@ void LoadDataFile(string fileName)
 
     inputFile.close();
 
-    cout << "\"" << fileName << "\" successfully loaded!\n";
+    cout << "Data successfully loaded!\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void SaveAllCustomerData()
 {
+    if (customerVector.empty())
+    {
+        cout << "________________________________________________________________________________________________________________________________\n";
+        cout << "There are no customers in the database.\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        return;
+    }
+
     ofstream outputFile;
 
     outputFile.open(SAVED_DATA_FILE_NAME);
@@ -251,6 +310,8 @@ void DisplayAllCustomerData()
         cout << "________________________________________________________________________________________________________________________________\n";
         cout << "There are no customers in the database.\n";
         cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        return;
     }
 
     for (const Customer& customer : customerVector)
