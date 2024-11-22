@@ -1,18 +1,18 @@
 #include "Purchase.h"
 
-Purchase::Purchase(string itemName, string date, float cost)
+Purchase::Purchase(const string& itemName, const string& date, const float cost)
 {
 	this->itemName = itemName;
 	this->date = date;
 	this->cost = cost;
 }
 
-string Purchase::GetItemName() const
+const string& Purchase::GetItemName() const
 {
 	return itemName;
 }
 
-string Purchase::GetPurchaseDate() const
+const string& Purchase::GetPurchaseDate() const
 {
 	return date;
 }

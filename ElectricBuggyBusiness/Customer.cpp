@@ -1,8 +1,6 @@
 #include "Customer.h"
 
-int Customer::customerCount = 0;
-
-Customer::Customer(string firstName, string lastName, string streetAddress, string city, string state, string zipcode, string phoneNumber)
+Customer::Customer(const string& firstName, const string& lastName, const string& streetAddress, const string& city, const string& state, const string& zipcode, const string& phoneNumber)
 {
 	this->firstName = firstName;
 	this->lastName = lastName;
@@ -12,8 +10,9 @@ Customer::Customer(string firstName, string lastName, string streetAddress, stri
 	this->zipcode = zipcode;
 	this->phoneNumber = phoneNumber;
 
-	customerCount++;
-	accountNumber = customerCount;
+	totalSpendings = 0.00;
+
+	accountNumber = rand() % 9999 + 1;
 }
 
 bool Customer::operator==(const Customer& otherCustomer)
@@ -21,9 +20,11 @@ bool Customer::operator==(const Customer& otherCustomer)
 	return accountNumber == otherCustomer.accountNumber;
 }
 
-void Customer::AddPurchase(Purchase purchase)
+void Customer::AddPurchase(const Purchase purchase)
 {
 	purchaseVector.push_back(purchase);
+
+	totalSpendings += purchase.GetItemCost();
 }
 
 void Customer::DisplayData() const
@@ -47,6 +48,22 @@ void Customer::DisplayData() const
 	cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
+void Customer::DisplayAllPurchases() const
+{
+	cout << "________________________________________________________________________________________________________________________________\n";
+	cout << "Total: $" << totalSpendings << "\n";
+
+	for (const Purchase& purchase : purchaseVector)
+	{
+		cout << "\t________________________________\n";
+		cout << "\t" << purchase.GetItemName() << ": $" << purchase.GetItemCost() << "\n\n";
+		cout << "\t" << purchase.GetPurchaseDate() << "\n";
+		cout << "\t________________________________\n\n";
+	}
+
+	cout << "________________________________________________________________________________________________________________________________\n\n";
+}
+
 void Customer::SaveData(ofstream& outputFile) const
 {
 	if (!purchaseVector.empty())
@@ -58,4 +75,19 @@ void Customer::SaveData(ofstream& outputFile) const
 	}
 
 	outputFile << firstName << "," << lastName << "," << streetAddress << "," << city << "," << state << "," << zipcode << "," << phoneNumber;
+}
+
+float Customer::GetTotalSpending() const
+{
+	return totalSpendings;
+}
+
+const string& Customer::GetFirstName() const
+{
+	return firstName;
+}
+
+const string& Customer::GetLastName() const
+{
+	return lastName;
 }

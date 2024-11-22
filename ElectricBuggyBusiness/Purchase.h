@@ -12,9 +12,9 @@ private:
 	float cost;
 
 public:
-	Purchase(string, string, float);
+	Purchase(const string&, const string&, const float);
 
-	string GetItemName() const;
-	string GetPurchaseDate() const;
+	const string& GetItemName() const;
+	const string& GetPurchaseDate() const;
 	float GetItemCost() const;
 };

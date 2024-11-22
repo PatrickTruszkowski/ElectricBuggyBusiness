@@ -13,8 +13,11 @@ void LoadDataFile(string);
 void SaveAllCustomerData();
 void DisplayMainMenu();
 void HandleMainMenuSelection();
+void DisplayCustomerMenu();
+Customer* HandleCustomerSelection();
 void DisplayAllCustomerData();
 int GetValidChoice(int, int);
+bool FinalizeChoice(string);
 
 const string DEFAULT_DATA_FILE_NAME = "DefaultData.txt";
 const string SAVED_DATA_FILE_NAME = "SavedData.txt";
@@ -30,7 +33,6 @@ int main()
     InitializeItems();
     Introduce();
 
-    system("Pause");
     system("CLS");
 
     DisplayMainMenu();
@@ -70,10 +72,7 @@ void HandleDataSelection()
 
     if (!hasDefaultData && !hasSavedData)
     {
-        system("CLS");
-
-        DisplayMainMenu();
-        HandleMainMenuSelection();
+        return;
     }
 
     cout << "________________________________________________________________________________________________________________________________\n";
@@ -96,6 +95,10 @@ void HandleDataSelection()
         {
             LoadDataFile(SAVED_DATA_FILE_NAME);
         }
+        else
+        {
+            return;
+        }
     }
     else if (hasDefaultData)
     {
@@ -108,6 +111,10 @@ void HandleDataSelection()
         if (choice == 1)
         {
             LoadDataFile(DEFAULT_DATA_FILE_NAME);
+        }
+        else
+        {
+            return;
         }
     }
     else if (hasSavedData)
@@ -122,7 +129,13 @@ void HandleDataSelection()
         {
             LoadDataFile(SAVED_DATA_FILE_NAME);
         }
+        else
+        {
+            return;
+        }
     }
+
+    system("Pause");
 }
 
 bool CheckDataFile(string fileName)
@@ -181,13 +194,10 @@ void LoadDataFile(string fileName)
                 isPruchase = true;
 
                 string date;
-                float cost;
 
                 getline(inputFile, date, ',');
 
-                cost = itemMap[startingName];
-
-                purchaseVector.emplace_back(startingName, date, cost);
+                purchaseVector.emplace_back(startingName, date, itemMap[startingName]);
             }
         }
 
@@ -264,13 +274,17 @@ void DisplayMainMenu()
 {
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "(1)\tDisplay All Customer Data\n";
-    cout << "(2)\tSave All Customer Data\n";
+    cout << "(2)\tDisplay All Purchases For Customer\n";
+    cout << "(3)\tSave All Customer Data\n";
+    cout << "(4)\tLoad Saved Customer Data\n";
+    cout << "(5)\tRemove All Customer Data\n";
+    cout << "(6)\tExit\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void HandleMainMenuSelection()
 {
-    int choice = GetValidChoice(1, 2);
+    int choice = GetValidChoice(1, 6);
 
     switch (choice)
     {
@@ -278,7 +292,16 @@ void HandleMainMenuSelection()
 
         system("CLS");
 
-        DisplayAllCustomerData();
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+        }
+        else
+        {
+            DisplayAllCustomerData();
+        }
 
         system("Pause");
         system("CLS");
@@ -291,6 +314,29 @@ void HandleMainMenuSelection()
 
         system("CLS");
 
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+        }
+        else
+        {
+            DisplayCustomerMenu();
+            HandleCustomerSelection()->DisplayAllPurchases();
+        }
+
+        system("Pause");
+        system("CLS");
+
+        DisplayMainMenu();
+        HandleMainMenuSelection();
+
+        break;
+    case 3:
+
+        system("CLS");
+
         SaveAllCustomerData();
 
         system("Pause");
@@ -300,20 +346,113 @@ void HandleMainMenuSelection()
         HandleMainMenuSelection();
 
         break;
+    case 4:
+
+        system("CLS");
+
+        if (CheckDataFile(SAVED_DATA_FILE_NAME))
+        {
+            if (customerVector.empty())
+            {
+                LoadDataFile(SAVED_DATA_FILE_NAME);
+
+                system("Pause");
+            }
+            else
+            {
+                if (FinalizeChoice("Loading saved data will override current data. Are you sure you want to proceed?"))
+                {
+                    customerVector.clear();
+
+                    LoadDataFile(SAVED_DATA_FILE_NAME);
+
+                    system("Pause");
+                }
+            }
+        }
+        else
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There is no saved data.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+
+        system("CLS");
+
+        DisplayMainMenu();
+        HandleMainMenuSelection();
+
+        break;
+    case 5:
+
+        system("CLS");
+
+        if (!customerVector.empty())
+        {
+            if (FinalizeChoice("Are you sure you want to remove all customer data?"))
+            {
+                cout << "________________________________________________________________________________________________________________________________\n";
+                cout << "Removing all customer data...\n\n";
+
+                customerVector.clear();
+
+                cout << "All customer data successfully removed!\n";
+                cout << "________________________________________________________________________________________________________________________________\n\n";
+
+                system("Pause");
+            }
+        }
+        else
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+
+        system("CLS");
+
+        DisplayMainMenu();
+        HandleMainMenuSelection();
+
+        break;
+    case 6:
+
+        cout << "Exiting...\n\n";
+
+        break;
     }
+}
+
+void DisplayCustomerMenu()
+{
+    int count = 1;
+
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Select a customer:\n\n";
+
+    for (const Customer& customer : customerVector)
+    {
+        cout << "(" << count << ")\t" << customer.GetFirstName() << " " << customer.GetLastName() << "\n";
+
+        count++;
+    }
+
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+}
+
+Customer* HandleCustomerSelection()
+{
+    int choice = GetValidChoice(1, customerVector.size());
+
+    return &customerVector.at(choice - 1);
 }
 
 void DisplayAllCustomerData()
 {
-    if (customerVector.empty())
-    {
-        cout << "________________________________________________________________________________________________________________________________\n";
-        cout << "There are no customers in the database.\n";
-        cout << "________________________________________________________________________________________________________________________________\n\n";
-
-        return;
-    }
-
     for (const Customer& customer : customerVector)
     {
         customer.DisplayData();
@@ -368,4 +507,22 @@ int GetValidChoice(int minimum, int maximum)
     } while (!valid);
 
     return choice;
+}
+
+bool FinalizeChoice(string confirmationText)
+{
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "! " << confirmationText << " !\n\n";
+    cout << "(1)\tNo\n";
+    cout << "(2)\tYes\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+
+    int choice = GetValidChoice(1, 2);
+
+    if (choice == 1)
+    {
+        return false;
+    }
+
+    return true;
 }

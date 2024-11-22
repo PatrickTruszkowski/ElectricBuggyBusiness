@@ -13,8 +13,6 @@ using namespace std;
 class Customer
 {
 private:
-	static int customerCount;
-
 	vector<Purchase> purchaseVector;
 	string firstName;
 	string lastName;
@@ -24,13 +22,18 @@ private:
 	string zipcode;
 	string phoneNumber;
 	int accountNumber;
+	float totalSpendings;
 
 public:
-	Customer(string, string, string, string, string, string, string);
+	Customer(const string&, const string&, const string&, const string&, const string&, const string&, const string&);
 
 	bool operator==(const Customer&);
 
-	void AddPurchase(Purchase);
+	void AddPurchase(const Purchase);
 	void DisplayData() const;
+	void DisplayAllPurchases() const;
 	void SaveData(ofstream&) const;
+	float GetTotalSpending() const;
+	const string& GetFirstName() const;
+	const string& GetLastName() const;
 };
