@@ -17,15 +17,14 @@ private:
 	string firstName;
 	string lastName;
 	string streetAddress;
-	string city;
-	string state;
+	string cityState;
 	string zipcode;
 	string phoneNumber;
 	int accountNumber;
 	float totalSpendings;
 
 public:
-	Customer(const string&, const string&, const string&, const string&, const string&, const string&, const string&);
+	Customer(const string&, const string&, const string&, const string&, const string&, const string&);
 
 	bool operator==(const Customer&);
 

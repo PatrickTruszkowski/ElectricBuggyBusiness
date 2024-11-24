@@ -1,12 +1,11 @@
 #include "Customer.h"
 
-Customer::Customer(const string& firstName, const string& lastName, const string& streetAddress, const string& city, const string& state, const string& zipcode, const string& phoneNumber)
+Customer::Customer(const string& firstName, const string& lastName, const string& streetAddress, const string& cityState, const string& zipcode, const string& phoneNumber)
 {
 	this->firstName = firstName;
 	this->lastName = lastName;
 	this->streetAddress = streetAddress;
-	this->city = city;
-	this->state = state;
+	this->cityState = cityState;
 	this->zipcode = zipcode;
 	this->phoneNumber = phoneNumber;
 
@@ -32,36 +31,53 @@ void Customer::DisplayData() const
 	cout << "________________________________________________________________________________________________________________________________\n";
 	cout << firstName << " " << lastName << "\n";
 	cout << streetAddress << "\n";
-	cout << city << ", " << state << ", " << zipcode << "\n";
+	cout << cityState << ", " << zipcode << "\n";
 	cout << phoneNumber << "\n\n";
 	cout << "Account #" << accountNumber << "\n\n";
 
-	cout << "\tPurchases:\n";
-
-	for (const Purchase& purchase : purchaseVector)
+	if (!purchaseVector.empty())
 	{
-		cout << "\t________________________________\n";
-		cout << "\t" << purchase.GetItemName() << ": $" << purchase.GetItemCost() << "\n\n";
-		cout << "\t" << purchase.GetPurchaseDate() << "\n";
-		cout << "\t________________________________\n\n";
+		cout << "\tPurchases:\n";
+
+		for (const Purchase& purchase : purchaseVector)
+		{
+			cout << "\t________________________________\n";
+			cout << "\t" << purchase.GetItemName() << ": $" << purchase.GetItemCost() << "\n\n";
+			cout << "\t" << purchase.GetPurchaseDate() << "\n";
+			cout << "\t________________________________\n\n";
+		}
+		cout << "________________________________________________________________________________________________________________________________\n\n";
 	}
-	cout << "________________________________________________________________________________________________________________________________\n\n";
+	else
+	{
+		cout << "\tCustomer has no purchases.\n";
+		cout << "________________________________________________________________________________________________________________________________\n\n";
+	}
 }
 
 void Customer::DisplayAllPurchases() const
 {
-	cout << "________________________________________________________________________________________________________________________________\n";
-	cout << "Total: $" << totalSpendings << "\n";
-
-	for (const Purchase& purchase : purchaseVector)
+	if (!purchaseVector.empty())
 	{
-		cout << "\t________________________________\n";
-		cout << "\t" << purchase.GetItemName() << ": $" << purchase.GetItemCost() << "\n\n";
-		cout << "\t" << purchase.GetPurchaseDate() << "\n";
-		cout << "\t________________________________\n\n";
-	}
+		cout << "________________________________________________________________________________________________________________________________\n";
+		cout << "Total: $" << totalSpendings << "\n";
 
-	cout << "________________________________________________________________________________________________________________________________\n\n";
+		for (const Purchase& purchase : purchaseVector)
+		{
+			cout << "\t________________________________\n";
+			cout << "\t" << purchase.GetItemName() << ": $" << purchase.GetItemCost() << "\n\n";
+			cout << "\t" << purchase.GetPurchaseDate() << "\n";
+			cout << "\t________________________________\n\n";
+		}
+
+		cout << "________________________________________________________________________________________________________________________________\n\n";
+	}
+	else
+	{
+		cout << "________________________________________________________________________________________________________________________________\n";
+		cout << "\tCustomer has no purchases.\n";
+		cout << "________________________________________________________________________________________________________________________________\n\n";
+	}
 }
 
 void Customer::SaveData(ofstream& outputFile) const
@@ -70,11 +86,11 @@ void Customer::SaveData(ofstream& outputFile) const
 	{
 		for (const Purchase& purchase : purchaseVector)
 		{
-			outputFile << purchase.GetItemName() << "," << purchase.GetPurchaseDate() << ",";
+			outputFile << purchase.GetItemName() << "+" << purchase.GetPurchaseDate() << "+";
 		}
 	}
 
-	outputFile << firstName << "," << lastName << "," << streetAddress << "," << city << "," << state << "," << zipcode << "," << phoneNumber;
+	outputFile << firstName << "+" << lastName << "+" << streetAddress << "+" << cityState << "+" << zipcode << "+" << phoneNumber;
 }
 
 float Customer::GetTotalSpending() const
