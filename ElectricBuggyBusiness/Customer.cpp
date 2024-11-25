@@ -19,11 +19,11 @@ bool Customer::operator==(const Customer& otherCustomer)
 	return accountNumber == otherCustomer.accountNumber;
 }
 
-void Customer::AddPurchase(const Purchase purchase)
+void Customer::AddPurchase(const string& itemName, const string& date, const float cost)
 {
-	purchaseVector.push_back(purchase);
+	purchaseVector.emplace_back(itemName, date, cost);
 
-	totalSpendings += purchase.GetItemCost();
+	totalSpendings += cost;
 }
 
 void Customer::DisplayData() const
@@ -37,7 +37,7 @@ void Customer::DisplayData() const
 
 	if (!purchaseVector.empty())
 	{
-		cout << "\tPurchases:\n";
+		cout << "\tPurchases (" << purchaseVector.size() << "):\n";
 
 		for (const Purchase& purchase : purchaseVector)
 		{

@@ -28,7 +28,7 @@ public:
 
 	bool operator==(const Customer&);
 
-	void AddPurchase(const Purchase);
+	void AddPurchase(const string&, const string&, const float);
 	void DisplayData() const;
 	void DisplayAllPurchases() const;
 	void SaveData(ofstream&) const;
