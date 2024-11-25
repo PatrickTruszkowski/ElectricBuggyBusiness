@@ -770,7 +770,6 @@ string GetValidPhoneNumber()
 string GetValidDate()
 {
     string date;
-    bool valid = false;
 
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select a month:\n\n";
