@@ -13,6 +13,8 @@ using namespace std;
 class Customer
 {
 private:
+	static vector<int> customerAccountNumberVector;
+
 	vector<Purchase> purchaseVector;
 	string firstName;
 	string lastName;
@@ -35,4 +37,6 @@ public:
 	float GetTotalSpending() const;
 	const string& GetFirstName() const;
 	const string& GetLastName() const;
+	int GetAccountNumber() const;
+	int GetPurchaseCount() const;
 };

@@ -1,5 +1,7 @@
 #include "Customer.h"
 
+vector<int> Customer::customerAccountNumberVector;
+
 Customer::Customer(const string& firstName, const string& lastName, const string& streetAddress, const string& cityState, const string& zipcode, const string& phoneNumber)
 {
 	this->firstName = firstName;
@@ -12,6 +14,30 @@ Customer::Customer(const string& firstName, const string& lastName, const string
 	totalSpendings = 0.00;
 
 	accountNumber = rand() % 9999 + 1;
+
+	if (!customerAccountNumberVector.empty())
+	{
+		bool valid = false;
+
+		while (!valid)
+		{
+			for (int currentAccountNumber : customerAccountNumberVector)
+			{
+				if (currentAccountNumber == accountNumber)
+				{
+					valid = false;
+
+					accountNumber = rand() % 9999 + 1;
+
+					break;
+				}
+
+				valid = true;
+
+				customerAccountNumberVector.emplace_back(accountNumber);
+			}
+		}
+	}
 }
 
 bool Customer::operator==(const Customer& otherCustomer)
@@ -21,7 +47,7 @@ bool Customer::operator==(const Customer& otherCustomer)
 
 void Customer::AddPurchase(const string& itemName, const string& date, const float cost)
 {
-	purchaseVector.emplace_back(itemName, date, cost);
+	purchaseVector.emplace(purchaseVector.begin(), itemName, date, cost);
 
 	totalSpendings += cost;
 }
@@ -37,7 +63,7 @@ void Customer::DisplayData() const
 
 	if (!purchaseVector.empty())
 	{
-		cout << "\tPurchases (" << purchaseVector.size() << "):\n";
+		cout << "\tPurchases (" << purchaseVector.size() << "): $" << totalSpendings << "\n";
 
 		for (const Purchase& purchase : purchaseVector)
 		{
@@ -60,7 +86,8 @@ void Customer::DisplayAllPurchases() const
 	if (!purchaseVector.empty())
 	{
 		cout << "________________________________________________________________________________________________________________________________\n";
-		cout << "Total: $" << totalSpendings << "\n";
+		cout << "Total: $" << totalSpendings << "\n\n";
+		cout << "\tPurchases (" << purchaseVector.size() << "):\n";
 
 		for (const Purchase& purchase : purchaseVector)
 		{
@@ -106,4 +133,14 @@ const string& Customer::GetFirstName() const
 const string& Customer::GetLastName() const
 {
 	return lastName;
+}
+
+int Customer::GetAccountNumber() const
+{
+	return accountNumber;
+}
+
+int Customer::GetPurchaseCount() const
+{
+	return purchaseVector.size();
 }

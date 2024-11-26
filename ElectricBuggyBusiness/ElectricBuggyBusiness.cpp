@@ -16,6 +16,8 @@ void DisplayMainMenu();
 void HandleMainMenuSelection();
 void DisplayCustomerMenu();
 void DisplayCityStateMenu();
+void HandleCustomerSorting();
+void SortCustomerVector();
 Customer* HandleCustomerSelection();
 void DisplayAllCustomerData();
 void AddNewCustomerData();
@@ -36,6 +38,8 @@ const string SAVED_DATA_FILE_NAME = "SavedData.txt";
 vector<Customer> customerVector;
 map<string, float> itemMap;
 map<int, string> cityStateMap;
+int sortingChoice = 0;
+int sortingOrder = 0;
 bool isRunning;
 
 int main()
@@ -54,6 +58,11 @@ int main()
     {
         DisplayMainMenu();
         HandleMainMenuSelection();
+
+        if (!(customerVector.empty() || sortingChoice == 0))
+        {
+            SortCustomerVector();
+        }
     }
 
     return 0;
@@ -89,7 +98,7 @@ void Introduce()
 {
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Welcome to Gordon Industries.\n";
-    cout << "We sell fully built electric Gordon Buggies or parts for electric buggies in the US.\n";
+    cout << "We sell fully built electric Gordon Buggies or parts for electric buggies in the east of the US.\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 
     system("Pause");
@@ -302,16 +311,17 @@ void DisplayMainMenu()
     cout << "(3)\tDisplay All Purchases For Customer\n";
     cout << "(4)\tAdd New Customer Data\n";
     cout << "(5)\tAdd New Purchase\n";
-    cout << "(6)\tSave All Customer Data\n";
-    cout << "(7)\tLoad Saved Customer Data\n";
-    cout << "(8)\tRemove All Customer Data\n";
-    cout << "(9)\tExit\n";
+    cout << "(6)\tSort Customer Data\n";
+    cout << "(7)\tSave All Customer Data\n";
+    cout << "(8)\tLoad Saved Customer Data\n";
+    cout << "(9)\tRemove All Customer Data\n";
+    cout << "(10)\tExit\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void HandleMainMenuSelection()
 {
-    int choice = GetValidChoice(1, 9);
+    int choice = GetValidChoice(1, 10);
 
     switch (choice)
     {
@@ -437,7 +447,9 @@ void HandleMainMenuSelection()
         }
         else
         {
-            SaveAllCustomerData();
+            cout << "Customer Sort Options\n";
+
+            HandleCustomerSorting();
 
             system("Pause");
         }
@@ -446,6 +458,28 @@ void HandleMainMenuSelection()
 
         break;
     case 7:
+
+        system("CLS");
+
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+        else
+        {
+            SaveAllCustomerData();
+
+            system("Pause");
+        }
+
+        system("CLS");
+
+        break;
+    case 8:
 
         system("CLS");
 
@@ -481,7 +515,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 8:
+    case 9:
 
         system("CLS");
 
@@ -512,7 +546,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 9:
+    case 10:
 
         isRunning = false;
 
@@ -551,6 +585,151 @@ void DisplayCityStateMenu()
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
+void HandleCustomerSorting()
+{
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Select sorting base:\n\n";
+    cout << "(1)\tAccount Number\n";
+    cout << "(2)\tPurchase Count\n";
+    cout << "(3)\tTotal Spendings\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+
+    sortingChoice = GetValidChoice(1, 3);
+
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Select an order:\n\n";
+    cout << "(1)\tAsceding\n";
+    cout << "(2)\tDescending\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+
+    sortingOrder = GetValidChoice(1, 2);
+
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Sorting...\n\n";
+
+    SortCustomerVector();
+
+    cout << "Sorting complete!\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+}
+
+void SortCustomerVector()
+{
+    // Bubble sort based on sorting choice.
+    switch (sortingChoice)
+    {
+    case 1: // Sort based on account number.
+
+        // Sort in ascending order.
+        if (sortingOrder == 1)
+        {
+            for (unsigned int i = 0; i < customerVector.size(); ++i)
+            {
+                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+                {
+                    if (customerVector.at(j).GetAccountNumber() > customerVector.at(j + 1).GetAccountNumber())
+                    {
+                        Customer smallerCustomer = customerVector.at(j + 1);
+
+                        customerVector.at(j + 1) = customerVector.at(j);
+                        customerVector.at(j) = smallerCustomer;
+                    }
+                }
+            }
+        }
+        else // Sort in descending order.
+        {
+            for (unsigned int i = 0; i < customerVector.size(); ++i)
+            {
+                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+                {
+                    if (customerVector.at(j).GetAccountNumber() < customerVector.at(j + 1).GetAccountNumber())
+                    {
+                        Customer biggerCustomer = customerVector.at(j + 1);
+
+                        customerVector.at(j + 1) = customerVector.at(j);
+                        customerVector.at(j) = biggerCustomer;
+                    }
+                }
+            }
+        }
+
+        break;
+    case 2: // Sort based on purchase count.
+
+        if (sortingOrder == 1)
+        {
+            for (unsigned int i = 0; i < customerVector.size(); ++i)
+            {
+                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+                {
+                    if (customerVector.at(j).GetPurchaseCount() > customerVector.at(j + 1).GetPurchaseCount())
+                    {
+                        Customer smallerCustomer = customerVector.at(j + 1);
+
+                        customerVector.at(j + 1) = customerVector.at(j);
+                        customerVector.at(j) = smallerCustomer;
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (unsigned int i = 0; i < customerVector.size(); ++i)
+            {
+                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+                {
+                    if (customerVector.at(j).GetPurchaseCount() < customerVector.at(j + 1).GetPurchaseCount())
+                    {
+                        Customer biggerCustomer = customerVector.at(j + 1);
+
+                        customerVector.at(j + 1) = customerVector.at(j);
+                        customerVector.at(j) = biggerCustomer;
+                    }
+                }
+            }
+        }
+
+        break;
+    case 3: // Sort based on total spendings.
+
+        if (sortingOrder == 1)
+        {
+            for (unsigned int i = 0; i < customerVector.size(); ++i)
+            {
+                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+                {
+                    if (customerVector.at(j).GetTotalSpending() > customerVector.at(j + 1).GetTotalSpending())
+                    {
+                        Customer smallerCustomer = customerVector.at(j + 1);
+
+                        customerVector.at(j + 1) = customerVector.at(j);
+                        customerVector.at(j) = smallerCustomer;
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (unsigned int i = 0; i < customerVector.size(); ++i)
+            {
+                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+                {
+                    if (customerVector.at(j).GetTotalSpending() < customerVector.at(j + 1).GetTotalSpending())
+                    {
+                        Customer biggerCustomer = customerVector.at(j + 1);
+
+                        customerVector.at(j + 1) = customerVector.at(j);
+                        customerVector.at(j) = biggerCustomer;
+                    }
+                }
+            }
+        }
+
+        break;
+    }
+}
+
 Customer* HandleCustomerSelection()
 {
     int choice = GetValidChoice(1, customerVector.size());
@@ -560,7 +739,42 @@ Customer* HandleCustomerSelection()
 
 void DisplayAllCustomerData()
 {
-    cout << "All Customers (" << customerVector.size() << ")\n";
+    cout << "All Customers (" << customerVector.size() << ")\tSorting: ";
+
+    if (sortingChoice != 0)
+    {
+        if (sortingOrder == 1)
+        {
+            cout << "Ascending ";
+        }
+        else
+        {
+            cout << "Descending ";
+        }
+
+        switch (sortingChoice)
+        {
+        case 1:
+
+            cout << "Account Number\n";
+
+            break;
+        case 2:
+
+            cout << "Purchase Count\n";
+
+            break;
+        case 3:
+
+            cout << "Total Spendings\n";
+
+            break;
+        }
+    }
+    else
+    {
+        cout << "Unsorted\n";
+    }
 
     for (const Customer& customer : customerVector)
     {
@@ -607,12 +821,12 @@ void AddNewCustomerData()
     zipcode = GetValidZipcode();
     phoneNumber = GetValidPhoneNumber();
     
-    customerVector.emplace_back(firstName, lastName, streetAddress, cityState, zipcode, phoneNumber);
+    customerVector.emplace(customerVector.begin(), firstName, lastName, streetAddress, cityState, zipcode, phoneNumber);
 
     cout << "\nCustomer data successfully added!\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 
-    customerVector.at(customerVector.size() - 1).DisplayData();
+    customerVector.at(0).DisplayData();
 }
 
 void AddNewPurchase(Customer* customerPtr)
@@ -706,7 +920,7 @@ string GetValidStreetAddress()
 
         if (streetAddress.empty())
         {
-            cout << "Address cannot be blank.\n";
+            cout << "Address cannot be blank.\n\n";
         }
 
     } while (streetAddress.empty());
@@ -729,7 +943,7 @@ string GetValidZipcode()
 
         if (!valid)
         {
-            cout << "Zipcode must be 5 digits.\n";
+            cout << "Zipcode must be numbers and be 5 digits.\n\n";
         }
 
     } while (!valid);
@@ -751,7 +965,7 @@ string GetValidPhoneNumber()
 
         if (!valid)
         {
-            cout << "Phone number must be 10 digits.\n";
+            cout << "Phone number must numbers and be 10 digits.\n\n";
         }
 
     } while (!valid);
@@ -772,7 +986,7 @@ string GetValidDate()
     string date;
 
     cout << "________________________________________________________________________________________________________________________________\n";
-    cout << "Select a month:\n\n";
+    cout << "Select month of purchase:\n\n";
     cout << "(1)\tJanuary\n";
     cout << "(2)\tFebruary\n";
     cout << "(3)\tMarch\n";
@@ -790,7 +1004,7 @@ string GetValidDate()
     int month = GetValidChoice(1, 12);
 
     cout << "________________________________________________________________________________________________________________________________\n";
-    cout << "Select a year:\n\n";
+    cout << "Select year of purchase:\n\n";
     cout << "(1)\t2019\n";
     cout << "(2)\t2020\n";
     cout << "(3)\t2021\n";
@@ -805,7 +1019,7 @@ string GetValidDate()
     int daysInMonth = DaysInMonth(month, year);
     int day;
 
-    cout << "\nEnter day (1 - " << daysInMonth << "): ";
+    cout << "\nEnter day of purchase (1 - " << daysInMonth << "): ";
     day = GetValidChoice(1, daysInMonth, false);
 
     date = to_string(month) + "/" + to_string(day) + "/" + to_string(year);
