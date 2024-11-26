@@ -1081,7 +1081,7 @@ void AddNewPurchase(Customer* customerPtr)
     // Display all items using map.
     for (const auto& pair : itemMap)
     {
-        cout << "(" << count << ")\t" << pair.first << ", $" << pair.second << "\n";
+        cout << "(" << count << ")\t" << setw(14) << pair.first << "|$" << pair.second << "\n";
 
         count++;
     }

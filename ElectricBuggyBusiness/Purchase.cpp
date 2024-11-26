@@ -2,6 +2,7 @@
 
 Purchase::Purchase(const string& itemName, const string& date, const float cost)
 {
+	// Construct purchase object.
 	this->itemName = itemName;
 	this->date = date;
 	this->cost = cost;
@@ -9,11 +10,13 @@ Purchase::Purchase(const string& itemName, const string& date, const float cost)
 
 bool Purchase::operator>(const Purchase& otherPurchase)
 {
+	// One purchase is greater than the other if ones cost is greater.
 	return cost > otherPurchase.cost;
 }
 
 bool Purchase::operator<(const Purchase& otherPurchase)
 {
+	// One purchase is less than the other if ones cost is less.
 	return cost < otherPurchase.cost;
 }
 

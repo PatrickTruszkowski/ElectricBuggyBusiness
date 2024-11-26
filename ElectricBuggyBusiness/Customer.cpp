@@ -1,9 +1,11 @@
 #include "Customer.h"
 
+// Declare customer account number vector.
 vector<int> Customer::customerAccountNumberVector;
 
 Customer::Customer(const string& firstName, const string& lastName, const string& streetAddress, const string& cityState, const string& zipcode, const string& phoneNumber)
 {
+	// Set the private member variables.
 	this->firstName = firstName;
 	this->lastName = lastName;
 	this->streetAddress = streetAddress;
@@ -11,18 +13,23 @@ Customer::Customer(const string& firstName, const string& lastName, const string
 	this->zipcode = zipcode;
 	this->phoneNumber = phoneNumber;
 
+	// Initialize total customer spendings to $0.00.
 	totalSpendings = 0.00;
 
+	// Generate random account number.
 	accountNumber = rand() % 9999 + 1;
 
+	// Check if no other customers exist yet.
 	if (!customerAccountNumberVector.empty())
 	{
 		bool valid = false;
 
 		while (!valid)
 		{
+			// Cycle through every existing account number and check if it's already created.
 			for (int currentAccountNumber : customerAccountNumberVector)
 			{
+				// If the generated account number was found, generate another number and check again.
 				if (currentAccountNumber == accountNumber)
 				{
 					valid = false;
@@ -34,6 +41,7 @@ Customer::Customer(const string& firstName, const string& lastName, const string
 
 				valid = true;
 
+				// Add new account number to the static vector.
 				customerAccountNumberVector.emplace_back(accountNumber);
 			}
 		}
@@ -42,18 +50,22 @@ Customer::Customer(const string& firstName, const string& lastName, const string
 
 bool Customer::operator==(const Customer& otherCustomer)
 {
+	// Two customers are equal if both of their account numbers are the same.
 	return accountNumber == otherCustomer.accountNumber;
 }
 
 void Customer::AddPurchase(const string& itemName, const string& date, const float cost)
 {
+	// Construct the new purchase at the beginning of the customer's purchase vector.
 	purchaseVector.emplace(purchaseVector.begin(), itemName, date, cost);
 
+	// Add the cost of the new purchase to the total spendings.
 	totalSpendings += cost;
 }
 
 void Customer::DisplayData() const
 {
+	// Display customer's data.
 	cout << "________________________________________________________________________________________________________________________________\n";
 	cout << firstName << " " << lastName << "\n";
 	cout << streetAddress << "\n";
@@ -61,10 +73,13 @@ void Customer::DisplayData() const
 	cout << phoneNumber << "\n\n";
 	cout << "Account #" << accountNumber << "\n\n";
 
+	// Check if the customer has any purchases.
 	if (!purchaseVector.empty())
 	{
+		// Display the total spendings.
 		cout << "\tPurchases (" << purchaseVector.size() << "): $" << totalSpendings << "\n";
 
+		// List all customer purchases.
 		for (const Purchase& purchase : purchaseVector)
 		{
 			cout << "\t________________________________\n";
@@ -83,12 +98,14 @@ void Customer::DisplayData() const
 
 void Customer::DisplayAllPurchases() const
 {
+	// Check if the customer has purchases.
 	if (!purchaseVector.empty())
 	{
 		cout << "________________________________________________________________________________________________________________________________\n";
 		cout << "Total: $" << totalSpendings << "\n\n";
 		cout << "\tPurchases (" << purchaseVector.size() << "):\n";
 
+		// List all purchases.
 		for (const Purchase& purchase : purchaseVector)
 		{
 			cout << "\t________________________________\n";
@@ -109,14 +126,17 @@ void Customer::DisplayAllPurchases() const
 
 void Customer::SaveData(ofstream& outputFile) const
 {
+	// Check if customer has purchases.
 	if (!purchaseVector.empty())
 	{
+		// Write purchase data into the save file.
 		for (const Purchase& purchase : purchaseVector)
 		{
 			outputFile << purchase.GetItemName() << "+" << purchase.GetPurchaseDate() << "+";
 		}
 	}
 
+	// Write customer's data into the save file.
 	outputFile << firstName << "+" << lastName << "+" << streetAddress << "+" << cityState << "+" << zipcode << "+" << phoneNumber;
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+// Include all libraries.
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -13,8 +14,10 @@ using namespace std;
 class Customer
 {
 private:
+	// Account number vector for checking for duplicate account numbers.
 	static vector<int> customerAccountNumberVector;
 
+	// Hold all customer puchases.
 	vector<Purchase> purchaseVector;
 	string firstName;
 	string lastName;
@@ -30,10 +33,13 @@ public:
 
 	bool operator==(const Customer&);
 
+	// Customer functionality.
 	void AddPurchase(const string&, const string&, const float);
 	void DisplayData() const;
 	void DisplayAllPurchases() const;
 	void SaveData(ofstream&) const;
+
+	// Getters & setters.
 	float GetTotalSpending() const;
 	const string& GetFirstName() const;
 	const string& GetLastName() const;
