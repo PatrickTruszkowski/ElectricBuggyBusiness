@@ -36,33 +36,39 @@ int DaysInMonth(int, int);
 int GetValidChoice(int, int, bool = true);
 bool FinalizeChoice(const string&);
 
+// Store constants to avoid typos.
 const string DEFAULT_DATA_FILE_NAME = "DefaultData.txt";
 const string SAVED_DATA_FILE_NAME = "SavedData.txt";
 
-vector<Customer> customerVector; // Stores all customers.
-map<string, float> itemMap;
-map<int, string> cityStateMap;
-int sortingChoice = 0;
-int sortingOrder = 0;
-bool isRunning;
+vector<Customer> customerVector;    // Stores all customers.
+map<string, float> itemMap;         // Stores all key value pairs of the items for sale.
+map<int, string> cityStateMap;      // Stores all key value pairs of the states and cities.
+int sortingChoice = 0;              // Stores sorting option.
+int sortingOrder = 0;               // Stores sorting order.
+bool isRunning;                     // Program running flag.
 
 int main()
 {
+    // Seed the time for generating random account numbers and set precision to two decimal points for money.
     srand(time(0));
     cout << fixed << setprecision(2);
 
+    // Initialize maps with key value pairs and run intro sequence.
     InitializeMaps();
     Introduce();
 
     system("CLS");
 
+    // Start running.
     isRunning = true;
 
+    // Run while running flag is true.
     while (isRunning)
     {
         DisplayMainMenu();
         HandleMainMenuSelection();
 
+        // Sort the customers after every update.
         if (!(customerVector.empty() || sortingChoice == 0))
         {
             SortCustomerVector();
@@ -74,6 +80,7 @@ int main()
 
 void InitializeMaps()
 {
+    // Set key value pairs.
     itemMap["Gordon Buggy"] = 15000.00;
     itemMap["Electric Motor"] = 3000.00;
     itemMap["Brakes"] = 500.00;
@@ -100,6 +107,7 @@ void InitializeMaps()
 
 void Introduce()
 {
+    // Introduce the business.
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Welcome to Gordon Industries.\n";
     cout << "We sell fully built electric Gordon Buggies or parts for electric buggies in the east of the US.\n";
@@ -107,15 +115,18 @@ void Introduce()
 
     system("Pause");
 
+    // Let user choose what data to load if any.
     HandleDataSelection();
 }
 
 void HandleDataSelection()
 {
+    // Check if default and saved files exist.
     bool hasDefaultData = CheckDataFile(DEFAULT_DATA_FILE_NAME);
     bool hasSavedData = CheckDataFile(SAVED_DATA_FILE_NAME);
     int choice;
 
+    // Continue to main program if there are no files to select.
     if (!hasDefaultData && !hasSavedData)
     {
         return;
@@ -124,6 +135,7 @@ void HandleDataSelection()
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Would you like to load customer data?\n\n";
 
+    // Display option to load default data, saved data, or none if both files exist.
     if (hasDefaultData && hasSavedData)
     {
         cout << "(1)\tDefault Data\n";
@@ -133,6 +145,7 @@ void HandleDataSelection()
 
         choice = GetValidChoice(1, 3);
 
+        // Handle which file to load.
         if (choice == 1)
         {
             LoadDataFile(DEFAULT_DATA_FILE_NAME);
@@ -146,7 +159,7 @@ void HandleDataSelection()
             return;
         }
     }
-    else if (hasDefaultData)
+    else if (hasDefaultData) // Display option to load default data or not if only default file exists.
     {
         cout << "(1)\tDefault Data\n";
         cout << "(2)\tNone\n";
@@ -163,7 +176,7 @@ void HandleDataSelection()
             return;
         }
     }
-    else if (hasSavedData)
+    else if (hasSavedData) // Display option to load saved data or not if only saved file exists.
     {
         cout << "(1)\tSaved Data\n";
         cout << "(2)\tNone\n";
@@ -190,6 +203,7 @@ bool CheckDataFile(const string& fileName)
 
     inputFile.open(fileName);
 
+    // Try opening file, if can't open, close and return false.
     if (!inputFile)
     {
         inputFile.close();
@@ -197,12 +211,14 @@ bool CheckDataFile(const string& fileName)
         return false;
     }
 
+    // Check if the file is empty.
     inputFile.seekg(0, ios::end);
 
     size_t fileSize = inputFile.tellg();
 
     inputFile.seekg(0, ios::beg);
 
+    // If file is empty, close it and return false.
     if (fileSize == 0)
     {
         inputFile.close();
@@ -210,6 +226,7 @@ bool CheckDataFile(const string& fileName)
         return false;
     }
 
+    // If all checks pass, return true saying the file exists and contain data.
     return true;
 }
 
@@ -222,19 +239,23 @@ void LoadDataFile(const string& fileName)
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Loading...\n\n";
 
+    // Make temporary purchase vector to load from data file.
     vector<Purchase> purchaseVector;
     string startingName;
 
+    // While we are not at the end of the file.
     while (!inputFile.eof())
     {
         bool isPruchase = true;
 
+        // While the data is a purchase.
         while (isPruchase)
         {
             isPruchase = false;
 
             getline(inputFile, startingName, '+');
 
+            // If the value of the first string is found in the item map, data line is a purchase, continue to read in as a purchase object.
             if (!(itemMap.find(startingName) == itemMap.end()))
             {
                 isPruchase = true;
@@ -247,6 +268,7 @@ void LoadDataFile(const string& fileName)
             }
         }
 
+        // If the first string is not found in the item map, read in as customer data line.
         string lastName;
         string streetAddress;
         string cityState;
@@ -261,6 +283,7 @@ void LoadDataFile(const string& fileName)
 
         Customer customer(startingName, lastName, streetAddress, cityState, zipcode, phoneNumber);
 
+        // If the purchase vector has purchases, add it to the current customer.
         if (!purchaseVector.empty())
         {
             for (Purchase& purchase : purchaseVector)
@@ -268,6 +291,7 @@ void LoadDataFile(const string& fileName)
                 customer.AddPurchase(purchase.GetItemName(), purchase.GetPurchaseDate(), purchase.GetItemCost());
             }
 
+            // Clear purchase vector to get it ready for next data line.
             purchaseVector.clear();
         }
 
@@ -289,6 +313,7 @@ void SaveAllCustomerData()
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Saving...\n\n";
 
+    // Cycle through each customer and tell it to save its data.
     for (Customer& customer : customerVector)
     {
         customer.SaveData(outputFile);
@@ -307,6 +332,7 @@ void SaveAllCustomerData()
 
 void DisplayMainMenu()
 {
+    // Display all main menu options.
     cout << "Main Menu\tCustomers (" << customerVector.size() << ")\n";
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select a menu option:\n\n";
@@ -336,14 +362,17 @@ void DisplayMainMenu()
 
 void HandleMainMenuSelection()
 {
+    // Get a choice in range.
     int choice = GetValidChoice(1, 14);
 
+    // Call corresponding menu option.
     switch (choice)
     {
-    case 1:
+    case 1: // Display all customer data.
 
         system("CLS");
 
+        // Check if no customers exist.
         if (customerVector.empty())
         {
             cout << "________________________________________________________________________________________________________________________________\n";
@@ -362,7 +391,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 2:
+    case 2: // Display specific customer data.
 
         system("CLS");
 
@@ -387,7 +416,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 3:
+    case 3: // Display all purchases for a customer.
 
         system("CLS");
 
@@ -412,7 +441,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 4:
+    case 4: // Add new customer data.
 
         system("CLS");
 
@@ -423,7 +452,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 5:
+    case 5: // Add multiple new customer data.
 
         system("CLS");
 
@@ -432,7 +461,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 6:
+    case 6: // Add new purchase.
 
         system("CLS");
 
@@ -457,7 +486,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 7:
+    case 7: // Add multiple new purchases.
 
         system("CLS");
 
@@ -480,7 +509,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 8:
+    case 8: // Sorting options for customers.
 
         system("CLS");
 
@@ -504,7 +533,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 9:
+    case 9: // Update customer data.
 
         system("CLS");
 
@@ -529,7 +558,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 10:
+    case 10: // Save all customer data.
 
         system("CLS");
 
@@ -551,7 +580,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 11:
+    case 11: // Load customer data.
 
         system("CLS");
 
@@ -587,7 +616,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 12:
+    case 12: // Remove customer.
 
         system("CLS");
 
@@ -610,7 +639,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 13:
+    case 13: // Remove all customer data.
 
         system("CLS");
 
@@ -641,7 +670,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 14:
+    case 14: // Exit.
 
         isRunning = false;
 
@@ -656,6 +685,7 @@ void DisplayCustomerMenu()
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select a customer:\n\n";
 
+    // Cycle and number each customer.
     for (const Customer& customer : customerVector)
     {
         cout << "(" << count << ")\t" << customer.GetFirstName() << " " << customer.GetLastName() << "\n";
@@ -673,6 +703,7 @@ void DisplayCityStateMenu()
 
     cout << "\n\n";
 
+    // Display all cities and states.
     for (const auto& pair : cityStateMap)
     {
         cout << "(" << pair.first << ")\t" << pair.second << "\n";
@@ -682,6 +713,7 @@ void DisplayCityStateMenu()
 
 void HandleCustomerSorting()
 {
+    // Display sorting base menu.
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select sorting base:\n\n";
     cout << "(1)\tAccount Number\n";
@@ -702,6 +734,7 @@ void HandleCustomerSorting()
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Sorting...\n\n";
 
+    // Bubble sort customers.
     SortCustomerVector();
 
     cout << "Sorting complete!\n";
@@ -829,11 +862,13 @@ Customer* HandleCustomerSelection()
 {
     int choice = GetValidChoice(1, customerVector.size());
 
+    // Return the memory address of the selected customer.
     return &customerVector.at(choice - 1);
 }
 
 void DisplayAllCustomerData()
 {
+    // Display customer count and current sorting option.
     cout << "All Customers (" << customerVector.size() << ")\tSorting: ";
 
     if (sortingChoice != 0)
@@ -871,6 +906,7 @@ void DisplayAllCustomerData()
         cout << "Unsorted\n";
     }
 
+    // Display each customers data.
     for (const Customer& customer : customerVector)
     {
         customer.DisplayData();
@@ -892,10 +928,12 @@ void AddNewCustomerData()
     firstName = GetValidName(true);
     lastName = GetValidName(false);
 
+    // Check if this customer already exists in the database.
     if (!customerVector.empty())
     {
         for (const Customer& customer : customerVector)
         {
+            // Return to main menu if the user is trying to add the same customer.
             if (firstName == customer.GetFirstName() && lastName == customer.GetLastName())
             {
                 cout << "\nCustomer already exists.\n\n";
@@ -905,6 +943,7 @@ void AddNewCustomerData()
         }
     }
 
+    // Get the city and state selected.
     DisplayCityStateMenu();
     int choice = GetValidChoice(1, 14);
 
@@ -912,22 +951,27 @@ void AddNewCustomerData()
 
     cout << "\n";
 
+    // Get valid data for each.
     streetAddress = GetValidStreetAddress();
     zipcode = GetValidZipcode();
     phoneNumber = GetValidPhoneNumber();
     
+    // Construct new customer in the customer vector.
     customerVector.emplace(customerVector.begin(), firstName, lastName, streetAddress, cityState, zipcode, phoneNumber);
 
     cout << "\nCustomer data successfully added!\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 
+    // Display newly added customer.
     customerVector.at(0).DisplayData();
 }
 
 void AddMultipleNewCustomerData()
 {
+    // Add new customer.
     AddNewCustomerData();
 
+    // Prompt user if they want to add another customer.
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Add another customer?:\n\n";
     cout << "(1)\tYes\n";
@@ -940,14 +984,17 @@ void AddMultipleNewCustomerData()
     {
         system("CLS");
 
+        // Call function recursively.
         AddMultipleNewCustomerData();
     }
 }
 
 void UpdateCustomerData(Customer* customerPtr)
 {
+    // Show selected customer's data.
     customerPtr->DisplayData();
 
+    // Prompt which data to update.
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select customer data:\n\n";
     cout << "(1)\tFirst Name\n";
@@ -962,7 +1009,7 @@ void UpdateCustomerData(Customer* customerPtr)
 
     switch (choice)
     {
-    case 1:
+    case 1: // Update first name.
 
         cout << "________________________________________________________________________________________________________________________________\n";
 
@@ -972,7 +1019,7 @@ void UpdateCustomerData(Customer* customerPtr)
         cout << "________________________________________________________________________________________________________________________________\n\n";
 
         break;
-    case 2:
+    case 2: // Update last name.
 
         cout << "________________________________________________________________________________________________________________________________\n";
 
@@ -982,7 +1029,7 @@ void UpdateCustomerData(Customer* customerPtr)
         cout << "________________________________________________________________________________________________________________________________\n\n";
 
         break;
-    case 3:
+    case 3: // Update street address.
 
         cout << "________________________________________________________________________________________________________________________________\n";
 
@@ -992,7 +1039,7 @@ void UpdateCustomerData(Customer* customerPtr)
         cout << "________________________________________________________________________________________________________________________________\n\n";
 
         break;
-    case 4:
+    case 4: // Update city & state.
 
         DisplayCityStateMenu();
         customerPtr->SetCityState(cityStateMap[GetValidChoice(1, 14)]);
@@ -1001,7 +1048,7 @@ void UpdateCustomerData(Customer* customerPtr)
         cout << "________________________________________________________________________________________________________________________________\n\n";
 
         break;
-    case 5:
+    case 5: // Update zipcode.
 
         cout << "\n________________________________________________________________________________________________________________________________\n";
 
@@ -1011,7 +1058,7 @@ void UpdateCustomerData(Customer* customerPtr)
         cout << "________________________________________________________________________________________________________________________________\n\n";
 
         break;
-    case 6:
+    case 6: // Update phone number.
 
         cout << "________________________________________________________________________________________________________________________________\n";
 
@@ -1031,6 +1078,7 @@ void AddNewPurchase(Customer* customerPtr)
 
     int count = 1;
 
+    // Display all items using map.
     for (const auto& pair : itemMap)
     {
         cout << "(" << count << ")\t" << pair.first << ", $" << pair.second << "\n";
@@ -1047,6 +1095,7 @@ void AddNewPurchase(Customer* customerPtr)
     string itemName;
     float cost = 0.00;
 
+    // Set corresponding key value pairs.
     for (const auto& pair : itemMap)
     {
         if (count == choice)
@@ -1062,6 +1111,7 @@ void AddNewPurchase(Customer* customerPtr)
 
     string date = GetValidDate();
 
+    // Add the purchase to the customer.
     customerPtr->AddPurchase(itemName, date, cost);
 
     cout << "\nPurchase of " << itemName << ", $" << cost << " was added to customer " << customerPtr->GetFirstName() << " " << customerPtr->GetLastName() << ".\n";
@@ -1070,8 +1120,10 @@ void AddNewPurchase(Customer* customerPtr)
 
 void AddMultipleNewPurchases(Customer* customerPtr)
 {
+    // Add new purchase.
     AddNewPurchase(customerPtr);
 
+    // Prompt for input of another purchase.
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Add another purchase?:\n\n";
     cout << "(1)\tYes\n";
@@ -1084,17 +1136,20 @@ void AddMultipleNewPurchases(Customer* customerPtr)
     {
         system("CLS");
 
+        // Call function recursively.
         AddMultipleNewPurchases(customerPtr);
     }
 }
 
 void RemoveCustomer(Customer* customerPtr)
 {
+    // Ensure the user really wants to continue with this action.
     if (!FinalizeChoice("Are you sure you want to remove " + customerPtr->GetFirstName() + " " + customerPtr->GetLastName() + "?"))
     {
         return;
     }
 
+    // Cycle through the customer vector and remove the matching customer.
     for (Customer& customer : customerVector)
     {
         if (customer == *customerPtr)
@@ -1118,6 +1173,7 @@ string GetValidName(bool isFirst)
 
     do
     {
+        // Prompt user to enter the name.
         if (isFirst)
         {
             cout << "Enter customer's first name: ";
@@ -1128,8 +1184,10 @@ string GetValidName(bool isFirst)
         }
         getline(cin, name);
 
+        // Check if the input is not empty and if there are no digits in the name.
         valid = !name.empty() && none_of(name.begin(), name.end(), ::isdigit);
 
+        // Tell user what's wrong.
         if (name.empty())
         {
             cout << "Customer's name cannot blank.\n\n";
@@ -1142,8 +1200,9 @@ string GetValidName(bool isFirst)
             }
         }
 
-    } while (!valid);
+    } while (!valid); // Repeat until it's valid.
 
+    // Return the valid name.
     return name;
 }
 
@@ -1156,13 +1215,15 @@ string GetValidStreetAddress()
         cout << "Enter customer's street address: ";
         getline(cin, streetAddress);
 
+        // Tell user what's wrong.
         if (streetAddress.empty())
         {
             cout << "Address cannot be blank.\n\n";
         }
 
-    } while (streetAddress.empty());
+    } while (streetAddress.empty()); // Repeat while the input is empty.
 
+    // Return valid street address.
     return streetAddress;
 }
 
@@ -1176,9 +1237,10 @@ string GetValidZipcode()
         cout << "Enter customer's zipcode (5 Digits): ";
         getline(cin, zipcode);
 
-        // Check if all characters in the string are digits.
+        // Check if the input is not empty, no characters, and is 5 numbers long.
         valid = !zipcode.empty() && all_of(zipcode.begin(), zipcode.end(), ::isdigit) && zipcode.length() == 5;
 
+        // Tell user what's wrong.
         if (!valid)
         {
             cout << "Zipcode must be numbers and be 5 digits.\n\n";
@@ -1186,6 +1248,7 @@ string GetValidZipcode()
 
     } while (!valid);
 
+    // Return valid zipcode.
     return zipcode;
 }
 
@@ -1199,6 +1262,7 @@ string GetValidPhoneNumber()
         cout << "Enter customer's phone number (Only Numbers, 10 Digits): ";
         getline(cin, phoneNumber);
 
+        // Check if the input is not empty, no characters, and is 10 numbers long.
         valid = !phoneNumber.empty() && all_of(phoneNumber.begin(), phoneNumber.end(), ::isdigit) && phoneNumber.length() == 10;
 
         if (!valid)
@@ -1208,6 +1272,7 @@ string GetValidPhoneNumber()
 
     } while (!valid);
 
+    // Insert hyphens in proper places.
     for (size_t index = 0; index < phoneNumber.size(); index++)
     {
         if (index == 3 || index == 7)
@@ -1216,6 +1281,7 @@ string GetValidPhoneNumber()
         }
     }
 
+    // Return valid phone number.
     return phoneNumber;
 }
 
@@ -1223,6 +1289,7 @@ string GetValidDate()
 {
     string date;
 
+    // Display all months.
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select month of purchase:\n\n";
     cout << "(1)\tJanuary\n";
@@ -1241,6 +1308,7 @@ string GetValidDate()
 
     int month = GetValidChoice(1, 12);
 
+    // Display all possible purchase years.
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select year of purchase:\n\n";
     cout << "(1)\t2019\n";
@@ -1257,16 +1325,20 @@ string GetValidDate()
     int daysInMonth = DaysInMonth(month, year);
     int day;
 
+    // Prompt user to enter a valid day based on month and if it was a leap year.
     cout << "\nEnter day of purchase (1 - " << daysInMonth << "): ";
     day = GetValidChoice(1, daysInMonth, false);
 
+    // Format date.
     date = to_string(month) + "/" + to_string(day) + "/" + to_string(year);
 
+    // Return valid date.
     return date;
 }
 
 bool IsLeapYear(int year)
 {
+    // Determine if year is a leap year.
     if (year % 4 == 0)
     {
         if (year % 100 == 0)
@@ -1287,6 +1359,7 @@ bool IsLeapYear(int year)
 
 int DaysInMonth(int month, int year)
 {
+    // Determine how many days are in the month based on year.
     switch (month)
     {
     case 1:
@@ -1333,6 +1406,7 @@ int GetValidChoice(int minimum, int maximum, bool prompt)
 
         stringstream stringStream(choiceInput);
 
+        // Check if the input is within range, is numbers only, and is not empty.
         if (stringStream >> choice)
         {
             if (stringStream.eof())
@@ -1369,6 +1443,7 @@ int GetValidChoice(int minimum, int maximum, bool prompt)
 
 bool FinalizeChoice(const string& confirmationText)
 {
+    // Display confirmation.
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "! " << confirmationText << " !\n\n";
     cout << "(1)\tNo\n";
