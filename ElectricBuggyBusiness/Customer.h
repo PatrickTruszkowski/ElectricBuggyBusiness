@@ -37,6 +37,16 @@ public:
 	float GetTotalSpending() const;
 	const string& GetFirstName() const;
 	const string& GetLastName() const;
+	const string& GetStreetAddress() const;
+	const string& GetCityState() const;
+	const string& GetZipcode() const;
+	const string& GetPhoneNumber() const;
 	int GetAccountNumber() const;
 	int GetPurchaseCount() const;
+	void SetFirstName(const string&);
+	void SetLastName(const string&);
+	void SetStreetAddress(const string&);
+	void SetCityState(const string&);
+	void SetZipcode(const string&);
+	void SetPhoneNumber(const string&);
 };

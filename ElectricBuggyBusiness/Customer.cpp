@@ -135,6 +135,26 @@ const string& Customer::GetLastName() const
 	return lastName;
 }
 
+const string& Customer::GetStreetAddress() const
+{
+	return streetAddress;
+}
+
+const string& Customer::GetCityState() const
+{
+	return cityState;
+}
+
+const string& Customer::GetZipcode() const
+{
+	return zipcode;
+}
+
+const string& Customer::GetPhoneNumber() const
+{
+	return phoneNumber;
+}
+
 int Customer::GetAccountNumber() const
 {
 	return accountNumber;
@@ -143,4 +163,34 @@ int Customer::GetAccountNumber() const
 int Customer::GetPurchaseCount() const
 {
 	return purchaseVector.size();
+}
+
+void Customer::SetFirstName(const string& firstName)
+{
+	this->firstName = firstName;
+}
+
+void Customer::SetLastName(const string& lastName)
+{
+	this->lastName = lastName;
+}
+
+void Customer::SetStreetAddress(const string& streetAddress)
+{
+	this->streetAddress = streetAddress;
+}
+
+void Customer::SetCityState(const string& cityState)
+{
+	this->cityState = cityState;
+}
+
+void Customer::SetZipcode(const string& zipcode)
+{
+	this->zipcode = zipcode;
+}
+
+void Customer::SetPhoneNumber(const string& phoneNumber)
+{
+	this->phoneNumber = phoneNumber;
 }

@@ -21,6 +21,7 @@ void SortCustomerVector();
 Customer* HandleCustomerSelection();
 void DisplayAllCustomerData();
 void AddNewCustomerData();
+void UpdateCustomerData(Customer*);
 void AddNewPurchase(Customer*);
 string GetValidName(bool);
 string GetValidStreetAddress();
@@ -306,22 +307,26 @@ void DisplayMainMenu()
     cout << "Main Menu\n";
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select a menu option:\n\n";
+    cout << "View Customer Data\n";
     cout << "(1)\tDisplay All Customer Data\n";
     cout << "(2)\tDisplay Specific Customer Data\n";
-    cout << "(3)\tDisplay All Purchases For Customer\n";
+    cout << "(3)\tDisplay All Purchases For Customer\n\n";
+    cout << "Add New Data\n";
     cout << "(4)\tAdd New Customer Data\n";
-    cout << "(5)\tAdd New Purchase\n";
+    cout << "(5)\tAdd New Purchase\n\n";
+    cout << "Organization\n";
     cout << "(6)\tSort Customer Data\n";
-    cout << "(7)\tSave All Customer Data\n";
-    cout << "(8)\tLoad Saved Customer Data\n";
-    cout << "(9)\tRemove All Customer Data\n";
-    cout << "(10)\tExit\n";
+    cout << "(7)\tUpdate Customer Data\n";
+    cout << "(8)\tSave All Customer Data\n";
+    cout << "(9)\tLoad Saved Customer Data\n";
+    cout << "(10)\tRemove All Customer Data\n\n\n";
+    cout << "(11)\tExit\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void HandleMainMenuSelection()
 {
-    int choice = GetValidChoice(1, 10);
+    int choice = GetValidChoice(1, 11);
 
     switch (choice)
     {
@@ -471,7 +476,10 @@ void HandleMainMenuSelection()
         }
         else
         {
-            SaveAllCustomerData();
+            cout << "Update Customer's Data\n";
+
+            DisplayCustomerMenu();
+            UpdateCustomerData(HandleCustomerSelection());
 
             system("Pause");
         }
@@ -480,6 +488,28 @@ void HandleMainMenuSelection()
 
         break;
     case 8:
+
+        system("CLS");
+
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+        else
+        {
+            SaveAllCustomerData();
+
+            system("Pause");
+        }
+
+        system("CLS");
+
+        break;
+    case 9:
 
         system("CLS");
 
@@ -515,7 +545,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 9:
+    case 10:
 
         system("CLS");
 
@@ -546,7 +576,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 10:
+    case 11:
 
         isRunning = false;
 
@@ -827,6 +857,86 @@ void AddNewCustomerData()
     cout << "________________________________________________________________________________________________________________________________\n\n";
 
     customerVector.at(0).DisplayData();
+}
+
+void UpdateCustomerData(Customer* customerPtr)
+{
+    customerPtr->DisplayData();
+
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Select customer data:\n\n";
+    cout << "(1)\tFirst Name\n";
+    cout << "(2)\tLast Name\n";
+    cout << "(3)\tStreet Address\n";
+    cout << "(4)\tCity & State\n";
+    cout << "(5)\tZipcode\n";
+    cout << "(6)\tPhone Number\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+
+    int choice = GetValidChoice(1, 6);
+
+    switch (choice)
+    {
+    case 1:
+
+        cout << "________________________________________________________________________________________________________________________________\n";
+
+        customerPtr->SetFirstName(GetValidName(true));
+
+        cout << "\nCustomer's first name was changed to " << customerPtr->GetFirstName() << ".\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        break;
+    case 2:
+
+        cout << "________________________________________________________________________________________________________________________________\n";
+
+        customerPtr->SetLastName(GetValidName(false));
+
+        cout << "\nCustomer's last name was changed to " << customerPtr->GetLastName() << ".\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        break;
+    case 3:
+
+        cout << "________________________________________________________________________________________________________________________________\n";
+
+        customerPtr->SetStreetAddress(GetValidStreetAddress());
+
+        cout << "\nCustomer's street address was changed to " << customerPtr->GetStreetAddress() << ".\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        break;
+    case 4:
+
+        DisplayCityStateMenu();
+        customerPtr->SetCityState(cityStateMap[GetValidChoice(1, 14)]);
+
+        cout << "\nCustomer's city and state was changed to " << customerPtr->GetCityState() << ".\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        break;
+    case 5:
+
+        cout << "\n________________________________________________________________________________________________________________________________\n";
+
+        customerPtr->SetZipcode(GetValidZipcode());
+
+        cout << "\nCustomer's zipcode was changed to " << customerPtr->GetZipcode() << ".\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        break;
+    case 6:
+
+        cout << "________________________________________________________________________________________________________________________________\n";
+
+        customerPtr->SetPhoneNumber(GetValidPhoneNumber());
+
+        cout << "\nCustomer's phone number was changed to " << customerPtr->GetPhoneNumber() << ".\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        break;
+    }
 }
 
 void AddNewPurchase(Customer* customerPtr)
