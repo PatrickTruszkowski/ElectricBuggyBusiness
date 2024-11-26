@@ -21,8 +21,11 @@ void SortCustomerVector();
 Customer* HandleCustomerSelection();
 void DisplayAllCustomerData();
 void AddNewCustomerData();
+void AddMultipleNewCustomerData();
 void UpdateCustomerData(Customer*);
 void AddNewPurchase(Customer*);
+void AddMultipleNewPurchases(Customer*);
+void RemoveCustomer(Customer*);
 string GetValidName(bool);
 string GetValidStreetAddress();
 string GetValidZipcode();
@@ -304,29 +307,36 @@ void SaveAllCustomerData()
 
 void DisplayMainMenu()
 {
-    cout << "Main Menu\n";
+    cout << "Main Menu\tCustomers (" << customerVector.size() << ")\n";
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select a menu option:\n\n";
+
     cout << "View Customer Data\n";
     cout << "(1)\tDisplay All Customer Data\n";
     cout << "(2)\tDisplay Specific Customer Data\n";
     cout << "(3)\tDisplay All Purchases For Customer\n\n";
+
     cout << "Add New Data\n";
     cout << "(4)\tAdd New Customer Data\n";
-    cout << "(5)\tAdd New Purchase\n\n";
+    cout << "(5)\tAdd Multiple New Customer Data\n";
+    cout << "(6)\tAdd New Purchase\n";
+    cout << "(7)\tAdd Multiple New Purchases\n\n";
+
     cout << "Organization\n";
-    cout << "(6)\tSort Customer Data\n";
-    cout << "(7)\tUpdate Customer Data\n";
-    cout << "(8)\tSave All Customer Data\n";
-    cout << "(9)\tLoad Saved Customer Data\n";
-    cout << "(10)\tRemove All Customer Data\n\n\n";
-    cout << "(11)\tExit\n";
+    cout << "(8)\tSort Customer Data\n";
+    cout << "(9)\tUpdate Customer Data\n";
+    cout << "(10)\tSave All Customer Data\n";
+    cout << "(11)\tLoad Saved Customer Data\n";
+    cout << "(12)\tRemove Customer Data\n";
+    cout << "(13)\tRemove All Customer Data\n\n\n";
+
+    cout << "(14)\tExit\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void HandleMainMenuSelection()
 {
-    int choice = GetValidChoice(1, 11);
+    int choice = GetValidChoice(1, 14);
 
     switch (choice)
     {
@@ -417,6 +427,15 @@ void HandleMainMenuSelection()
 
         system("CLS");
 
+        AddMultipleNewCustomerData();
+
+        system("CLS");
+
+        break;
+    case 6:
+
+        system("CLS");
+
         if (customerVector.empty())
         {
             cout << "________________________________________________________________________________________________________________________________\n";
@@ -438,7 +457,30 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 6:
+    case 7:
+
+        system("CLS");
+
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+        else
+        {
+            cout << "Add Multiple Purchases To Customer\n";
+
+            DisplayCustomerMenu();
+            AddMultipleNewPurchases(HandleCustomerSelection());
+        }
+
+        system("CLS");
+
+        break;
+    case 8:
 
         system("CLS");
 
@@ -462,7 +504,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 7:
+    case 9:
 
         system("CLS");
 
@@ -487,7 +529,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 8:
+    case 10:
 
         system("CLS");
 
@@ -509,7 +551,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 9:
+    case 11:
 
         system("CLS");
 
@@ -545,7 +587,30 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 10:
+    case 12:
+
+        system("CLS");
+
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+        else
+        {
+            cout << "Remove Customer Data\n";
+
+            DisplayCustomerMenu();
+            RemoveCustomer(HandleCustomerSelection());
+        }
+
+        system("CLS");
+
+        break;
+    case 13:
 
         system("CLS");
 
@@ -576,7 +641,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 11:
+    case 14:
 
         isRunning = false;
 
@@ -859,6 +924,26 @@ void AddNewCustomerData()
     customerVector.at(0).DisplayData();
 }
 
+void AddMultipleNewCustomerData()
+{
+    AddNewCustomerData();
+
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Add another customer?:\n\n";
+    cout << "(1)\tYes\n";
+    cout << "(2)\tNo\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+
+    int choice = GetValidChoice(1, 2);
+
+    if (choice == 1)
+    {
+        system("CLS");
+
+        AddMultipleNewCustomerData();
+    }
+}
+
 void UpdateCustomerData(Customer* customerPtr)
 {
     customerPtr->DisplayData();
@@ -981,6 +1066,49 @@ void AddNewPurchase(Customer* customerPtr)
 
     cout << "\nPurchase of " << itemName << ", $" << cost << " was added to customer " << customerPtr->GetFirstName() << " " << customerPtr->GetLastName() << ".\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
+}
+
+void AddMultipleNewPurchases(Customer* customerPtr)
+{
+    AddNewPurchase(customerPtr);
+
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Add another purchase?:\n\n";
+    cout << "(1)\tYes\n";
+    cout << "(2)\tNo\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+
+    int choice = GetValidChoice(1, 2);
+
+    if (choice == 1)
+    {
+        system("CLS");
+
+        AddMultipleNewPurchases(customerPtr);
+    }
+}
+
+void RemoveCustomer(Customer* customerPtr)
+{
+    if (!FinalizeChoice("Are you sure you want to remove " + customerPtr->GetFirstName() + " " + customerPtr->GetLastName() + "?"))
+    {
+        return;
+    }
+
+    for (Customer& customer : customerVector)
+    {
+        if (customer == *customerPtr)
+        {
+            customerVector.erase(remove(customerVector.begin(), customerVector.end(), customer), customerVector.end());
+
+            cout << "\nCustomer data successfully removed!\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+
+            return;
+        }
+    }
 }
 
 string GetValidName(bool isFirst)
