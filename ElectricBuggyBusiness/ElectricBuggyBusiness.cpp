@@ -39,7 +39,7 @@ bool FinalizeChoice(const string&);
 const string DEFAULT_DATA_FILE_NAME = "DefaultData.txt";
 const string SAVED_DATA_FILE_NAME = "SavedData.txt";
 
-vector<Customer> customerVector;
+vector<Customer> customerVector; // Stores all customers.
 map<string, float> itemMap;
 map<int, string> cityStateMap;
 int sortingChoice = 0;
