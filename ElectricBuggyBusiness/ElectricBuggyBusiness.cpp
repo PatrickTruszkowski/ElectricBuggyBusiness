@@ -343,8 +343,19 @@ void DisplayMainMenu()
     cout << "(3)\tDisplay All Purchases For Customer\n\n";
 
     cout << "Add New Data\n";
-    cout << "(4)\tAdd New Customer Data\n";
-    cout << "(5)\tAdd Multiple New Customer Data\n";
+
+    // Show star next to adding customer when no customers exist.
+    if (customerVector.empty())
+    {
+        cout << "(4)\t*Add New Customer Data\n";
+        cout << "(5)\t*Add Multiple New Customer Data\n";
+    }
+    else
+    {
+        cout << "(4)\tAdd New Customer Data\n";
+        cout << "(5)\tAdd Multiple New Customer Data\n";
+    }
+
     cout << "(6)\tAdd New Purchase\n";
     cout << "(7)\tAdd Multiple New Purchases\n\n";
 
