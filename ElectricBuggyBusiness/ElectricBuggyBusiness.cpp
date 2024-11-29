@@ -495,7 +495,7 @@ void HandleMainMenuSelection()
         }
         else
         {
-            cout << "Customer Sort Options\n";
+            cout << "Customer Sorting Options\n";
 
             HandleCustomerSorting();
 
@@ -1115,8 +1115,10 @@ void AddNewPurchases(Customer* customerPtr)
 
 void RemoveCustomer(Customer* customerPtr)
 {
+    string customerName = customerPtr->GetFirstName() + " " + customerPtr->GetLastName();
+
     // Ensure the user really wants to continue with this action.
-    if (!FinalizeChoice("Are you sure you want to remove " + customerPtr->GetFirstName() + " " + customerPtr->GetLastName() + "?"))
+    if (!FinalizeChoice("Are you sure you want to remove " + customerName + "?"))
     {
         return;
     }
@@ -1128,7 +1130,7 @@ void RemoveCustomer(Customer* customerPtr)
         {
             customerVector.erase(remove(customerVector.begin(), customerVector.end(), customer), customerVector.end());
 
-            cout << "\nCustomer data successfully removed!\n";
+            cout << "\n" << customerName << "'s data successfully removed!\n";
             cout << "________________________________________________________________________________________________________________________________\n\n";
 
             system("Pause");
