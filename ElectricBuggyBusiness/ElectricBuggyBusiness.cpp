@@ -21,10 +21,10 @@ void SortCustomerVector();
 Customer* HandleCustomerSelection();
 void DisplayAllCustomerData();
 void AddNewCustomerData();
-void AddMultipleNewCustomerData();
+void AddNewCustomersData();
 void UpdateCustomerData(Customer*);
 void AddNewPurchase(Customer*);
-void AddMultipleNewPurchases(Customer*);
+void AddNewPurchases(Customer*);
 void RemoveCustomer(Customer*);
 string GetValidName(bool);
 string GetValidStreetAddress();
@@ -347,34 +347,31 @@ void DisplayMainMenu()
     // Show star next to adding customer when no customers exist.
     if (customerVector.empty())
     {
-        cout << "(4)\t*Add New Customer Data\n";
-        cout << "(5)\t*Add Multiple New Customer Data\n";
+        cout << "(4)*\tAdd New Customer Data\n";
     }
     else
     {
         cout << "(4)\tAdd New Customer Data\n";
-        cout << "(5)\tAdd Multiple New Customer Data\n";
     }
 
-    cout << "(6)\tAdd New Purchase\n";
-    cout << "(7)\tAdd Multiple New Purchases\n\n";
+    cout << "(5)\tAdd New Purchases\n\n";
 
     cout << "Organization\n";
-    cout << "(8)\tSort Customer Data\n";
-    cout << "(9)\tUpdate Customer Data\n";
-    cout << "(10)\tSave All Customer Data\n";
-    cout << "(11)\tLoad Saved Customer Data\n";
-    cout << "(12)\tRemove Customer Data\n";
-    cout << "(13)\tRemove All Customer Data\n\n\n";
+    cout << "(6)\tSort Customer Data\n";
+    cout << "(7)\tUpdate Customer Data\n";
+    cout << "(8)\tSave All Customer Data\n";
+    cout << "(9)\tLoad Saved Customer Data\n";
+    cout << "(10)\tRemove Customer Data\n";
+    cout << "(11)\tRemove All Customer Data\n\n\n";
 
-    cout << "(14)\tExit\n";
+    cout << "(12)\tExit\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void HandleMainMenuSelection()
 {
     // Get a choice in range.
-    int choice = GetValidChoice(1, 14);
+    int choice = GetValidChoice(1, 12);
 
     // Call corresponding menu option.
     switch (choice)
@@ -456,23 +453,12 @@ void HandleMainMenuSelection()
 
         system("CLS");
 
-        AddNewCustomerData();
-
-        system("Pause");
+        AddNewCustomersData();
 
         system("CLS");
 
         break;
-    case 5: // Add multiple new customer data.
-
-        system("CLS");
-
-        AddMultipleNewCustomerData();
-
-        system("CLS");
-
-        break;
-    case 6: // Add new purchase.
+    case 5: // Add new purchases.
 
         system("CLS");
 
@@ -486,41 +472,16 @@ void HandleMainMenuSelection()
         }
         else
         {
-            cout << "Add Purchase To Customer\n";
+            cout << "Add Purchases To Customer\n";
 
             DisplayCustomerMenu();
-            AddNewPurchase(HandleCustomerSelection());
-
-            system("Pause");
+            AddNewPurchases(HandleCustomerSelection());
         }
 
         system("CLS");
 
         break;
-    case 7: // Add multiple new purchases.
-
-        system("CLS");
-
-        if (customerVector.empty())
-        {
-            cout << "________________________________________________________________________________________________________________________________\n";
-            cout << "There are no customers in the database.\n";
-            cout << "________________________________________________________________________________________________________________________________\n\n";
-
-            system("Pause");
-        }
-        else
-        {
-            cout << "Add Multiple Purchases To Customer\n";
-
-            DisplayCustomerMenu();
-            AddMultipleNewPurchases(HandleCustomerSelection());
-        }
-
-        system("CLS");
-
-        break;
-    case 8: // Sorting options for customers.
+    case 6: // Sorting options for customers.
 
         system("CLS");
 
@@ -544,7 +505,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 9: // Update customer data.
+    case 7: // Update customer data.
 
         system("CLS");
 
@@ -569,7 +530,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 10: // Save all customer data.
+    case 8: // Save all customer data.
 
         system("CLS");
 
@@ -591,7 +552,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 11: // Load customer data.
+    case 9: // Load customer data.
 
         system("CLS");
 
@@ -627,7 +588,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 12: // Remove customer.
+    case 10: // Remove customer.
 
         system("CLS");
 
@@ -650,7 +611,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 13: // Remove all customer data.
+    case 11: // Remove all customer data.
 
         system("CLS");
 
@@ -681,7 +642,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 14: // Exit.
+    case 12: // Exit.
 
         isRunning = false;
 
@@ -977,7 +938,7 @@ void AddNewCustomerData()
     customerVector.at(0).DisplayData();
 }
 
-void AddMultipleNewCustomerData()
+void AddNewCustomersData()
 {
     // Add new customer.
     AddNewCustomerData();
@@ -996,7 +957,7 @@ void AddMultipleNewCustomerData()
         system("CLS");
 
         // Call function recursively.
-        AddMultipleNewCustomerData();
+        AddNewCustomersData();
     }
 }
 
@@ -1129,7 +1090,7 @@ void AddNewPurchase(Customer* customerPtr)
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
-void AddMultipleNewPurchases(Customer* customerPtr)
+void AddNewPurchases(Customer* customerPtr)
 {
     // Add new purchase.
     AddNewPurchase(customerPtr);
@@ -1148,7 +1109,7 @@ void AddMultipleNewPurchases(Customer* customerPtr)
         system("CLS");
 
         // Call function recursively.
-        AddMultipleNewPurchases(customerPtr);
+        AddNewPurchases(customerPtr);
     }
 }
 
