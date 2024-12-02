@@ -342,6 +342,45 @@ void ExportCustomerData()
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Exporting Customer Data...\n\n";
 
+    // Display customer count and sorting.
+    outputFile << "Customers (" << customerVector.size() << ")\tSorting: ";
+
+    // Determine what sorting is currently being used.
+    if (sortingChoice != 0)
+    {
+        if (sortingOrder == 1)
+        {
+            outputFile << "Ascending ";
+        }
+        else
+        {
+            outputFile << "Descending ";
+        }
+
+        switch (sortingChoice)
+        {
+        case 1:
+
+            outputFile << "Account Number\n";
+
+            break;
+        case 2:
+
+            outputFile << "Purchase Count\n";
+
+            break;
+        case 3:
+
+            outputFile << "Total Spendings\n";
+
+            break;
+        }
+    }
+    else
+    {
+        outputFile << "Unsorted\n";
+    }
+
     // Cycle through every customer and export their data.
     for (const Customer& customer : customerVector)
     {
