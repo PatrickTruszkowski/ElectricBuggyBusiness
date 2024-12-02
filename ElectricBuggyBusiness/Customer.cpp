@@ -140,6 +140,41 @@ void Customer::SaveData(ofstream& outputFile) const
 	outputFile << firstName << "+" << lastName << "+" << streetAddress << "+" << cityState << "+" << zipcode << "+" << phoneNumber;
 }
 
+void Customer::ExportData(ofstream& outputFile) const
+{
+	outputFile << fixed << setprecision(2);
+
+	// Write customer's data to file.
+	outputFile << "________________________________________________________________________________________________________________________________\n";
+	outputFile << firstName << " " << lastName << "\n";
+	outputFile << streetAddress << "\n";
+	outputFile << cityState << ", " << zipcode << "\n";
+	outputFile << phoneNumber << "\n\n";
+	outputFile << "Account #" << accountNumber << "\n\n";
+
+	// Check if the customer has any purchases.
+	if (!purchaseVector.empty())
+	{
+		// Write the total spendings.
+		outputFile << "\tPurchases (" << purchaseVector.size() << "): $" << totalSpendings << "\n";
+
+		// List all customer purchases.
+		for (const Purchase& purchase : purchaseVector)
+		{
+			outputFile << "\t________________________________\n";
+			outputFile << "\t" << purchase.GetItemName() << ": $" << purchase.GetItemCost() << "\n\n";
+			outputFile << "\t" << purchase.GetPurchaseDate() << "\n";
+			outputFile << "\t________________________________\n\n";
+		}
+		outputFile << "________________________________________________________________________________________________________________________________\n\n";
+	}
+	else
+	{
+		outputFile << "\tCustomer has no purchases.\n";
+		outputFile << "________________________________________________________________________________________________________________________________\n\n";
+	}
+}
+
 float Customer::GetTotalSpending() const
 {
 	return totalSpendings;

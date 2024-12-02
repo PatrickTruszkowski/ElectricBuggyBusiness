@@ -31,6 +31,7 @@ private:
 public:
 	Customer(const string&, const string&, const string&, const string&, const string&, const string&);
 
+	// Define how a customer is equal to another customer.
 	bool operator==(const Customer&);
 
 	// Customer functionality.
@@ -38,6 +39,7 @@ public:
 	void DisplayData() const;
 	void DisplayAllPurchases() const;
 	void SaveData(ofstream&) const;
+	void ExportData(ofstream&) const;
 
 	// Getters & setters.
 	float GetTotalSpending() const;

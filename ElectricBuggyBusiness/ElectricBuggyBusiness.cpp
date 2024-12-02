@@ -12,6 +12,7 @@ void HandleDataSelection();
 bool CheckDataFile(const string&);
 void LoadDataFile(const string&);
 void SaveAllCustomerData();
+void ExportCustomerData();
 void DisplayMainMenu();
 void HandleMainMenuSelection();
 void DisplayCustomerMenu();
@@ -39,6 +40,7 @@ bool FinalizeChoice(const string&);
 // Store constants to avoid typos.
 const string DEFAULT_DATA_FILE_NAME = "DefaultData.txt";
 const string SAVED_DATA_FILE_NAME = "SavedData.txt";
+const string EXPORT_DATA_FILE_NAME = "CustomerData.txt";
 
 vector<Customer> customerVector;    // Stores all customers.
 map<string, float> itemMap;         // Stores all key value pairs of the items for sale.
@@ -330,6 +332,24 @@ void SaveAllCustomerData()
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
+void ExportCustomerData()
+{
+    ofstream outputFile;
+
+    outputFile.open(EXPORT_DATA_FILE_NAME);
+
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Exporting Customer Data...\n\n";
+
+    for (const Customer& customer : customerVector)
+    {
+        customer.ExportData(outputFile);
+    }
+
+    cout << "Customer data successfully exported!\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+}
+
 void DisplayMainMenu()
 {
     // Display all main menu options.
@@ -361,17 +381,18 @@ void DisplayMainMenu()
     cout << "(7)\tUpdate Customer Data\n";
     cout << "(8)\tSave All Customer Data\n";
     cout << "(9)\tLoad Saved Customer Data\n";
-    cout << "(10)\tRemove Customer Data\n";
-    cout << "(11)\tRemove All Customer Data\n\n\n";
+    cout << "(10)\tExport Customer Data\n";
+    cout << "(11)\tRemove Customer Data\n";
+    cout << "(12)\tRemove All Customer Data\n\n\n";
 
-    cout << "(12)\tExit\n";
+    cout << "(13)\tExit\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void HandleMainMenuSelection()
 {
     // Get a choice in range.
-    int choice = GetValidChoice(1, 12);
+    int choice = GetValidChoice(1, 13);
 
     // Call corresponding menu option.
     switch (choice)
@@ -588,7 +609,29 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 10: // Remove customer.
+    case 10:
+
+        system("CLS");
+
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+        else
+        {
+            ExportCustomerData();
+
+            system("Pause");
+        }
+
+        system("CLS");
+
+        break;
+    case 11: // Remove customer.
 
         system("CLS");
 
@@ -611,7 +654,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 11: // Remove all customer data.
+    case 12: // Remove all customer data.
 
         system("CLS");
 
@@ -642,7 +685,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 12: // Exit.
+    case 13: // Exit.
 
         isRunning = false;
 
