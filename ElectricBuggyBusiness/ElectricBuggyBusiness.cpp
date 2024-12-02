@@ -348,6 +348,8 @@ void ExportCustomerData()
         customer.ExportData(outputFile);
     }
 
+    outputFile.close();
+
     cout << "Customer data successfully exported!\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
