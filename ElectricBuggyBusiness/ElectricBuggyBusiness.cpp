@@ -334,6 +334,7 @@ void SaveAllCustomerData()
 
 void ExportCustomerData()
 {
+    // Create and open an output file.
     ofstream outputFile;
 
     outputFile.open(EXPORT_DATA_FILE_NAME);
@@ -341,6 +342,7 @@ void ExportCustomerData()
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Exporting Customer Data...\n\n";
 
+    // Cycle through every customer and export their data.
     for (const Customer& customer : customerVector)
     {
         customer.ExportData(outputFile);
