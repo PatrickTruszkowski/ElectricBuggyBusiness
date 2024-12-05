@@ -1335,6 +1335,9 @@ void CopyCustomerData(Customer* customerPtr)
 
     cout << customer.GetFirstName() << " " << customer.GetLastName() << "'s data successfully copied!\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
+
+    // Display the copied customer's data.
+    customer.DisplayData();
 }
 
 void UpdateCustomerData(Customer* customerPtr)
@@ -1373,7 +1376,8 @@ void UpdateCustomerData(Customer* customerPtr)
             {
                 if (customer.GetFirstName() == customerFirstName && customer.GetLastName() == customerLastName)
                 {
-                    cout << "Customer already exists.\n\n";
+                    cout << "Customer already exists.\n";
+                    cout << "________________________________________________________________________________________________________________________________\n\n";
 
                     return;
                 }
@@ -1401,7 +1405,8 @@ void UpdateCustomerData(Customer* customerPtr)
             {
                 if (customer.GetFirstName() == customerFirstName && customer.GetLastName() == customerLastName)
                 {
-                    cout << "Customer already exists.\n\n";
+                    cout << "Customer already exists.\n";
+                    cout << "________________________________________________________________________________________________________________________________\n\n";
 
                     return;
                 }
@@ -1538,6 +1543,10 @@ void RemoveCustomer(const int index)
 
     // Remove customer at index.
     customerVector.erase(customerVector.begin() + index);
+
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << customerName << "'s data successfully removed!\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void RemoveCustomers()
@@ -1586,6 +1595,10 @@ void RemoveCustomerPurchases(Customer* customerPtr)
     if (FinalizeChoice("Are you sure you want to delete this purchase?"))
     {
         customerPtr->RemovePurchaseAtIndex(choice - 1);
+
+        cout << "________________________________________________________________________________________________________________________________\n";
+        cout << "Purchase successfully removed!\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
     }
     else
     {
