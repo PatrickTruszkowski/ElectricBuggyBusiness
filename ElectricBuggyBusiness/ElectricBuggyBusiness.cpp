@@ -29,7 +29,7 @@ void CopyCustomerData(Customer*);
 void UpdateCustomerData(Customer*);
 void AddNewPurchase(Customer*);
 void AddNewPurchases(Customer*);
-void RemoveCustomer(Customer*);
+void RemoveCustomer(const int);
 void RemoveCustomers();
 void RemoveCustomerPurchases(Customer*);
 string GetValidName(bool);
@@ -1451,9 +1451,9 @@ void AddNewPurchases(Customer* customerPtr)
     }
 }
 
-void RemoveCustomer(Customer* customerPtr)
+void RemoveCustomer(const int index)
 {
-    string customerName = customerPtr->GetFirstName() + " " + customerPtr->GetLastName();
+    string customerName = customerVector.at(index).GetFirstName() + " " + customerVector.at(index).GetLastName();
 
     // Ensure the user really wants to continue with this action.
     if (!FinalizeChoice("Are you sure you want to remove " + customerName + "?"))
@@ -1461,26 +1461,15 @@ void RemoveCustomer(Customer* customerPtr)
         return;
     }
 
-    // Cycle through the customer vector and remove the matching customer.
-    for (const Customer& customer : customerVector)
-    {
-        if (customer == *customerPtr)
-        {
-            customerVector.erase(remove(customerVector.begin(), customerVector.end(), customer), customerVector.end());
-
-            cout << "\n" << customerName << "'s data successfully removed!\n";
-            cout << "________________________________________________________________________________________________________________________________\n\n";
-
-            return;
-        }
-    }
+    // Remove customer at index.
+    customerVector.erase(customerVector.begin() + index);
 }
 
 void RemoveCustomers()
 {
     // Handle customer selection.
     DisplayCustomerMenu();
-    RemoveCustomer(HandleCustomerSelection());
+    RemoveCustomer(GetValidChoice(1, customerVector.size()) - 1);
 
     // Keep asking for customer removal if customers remain.
     if (!customerVector.empty())
