@@ -29,13 +29,18 @@ private:
 	float totalSpendings;
 
 public:
+	// Constructor and copy constructor.
 	Customer(const string&, const string&, const string&, const string&, const string&, const string&);
+	Customer(const Customer&);
 
 	// Define how a customer is equal to another customer.
-	bool operator==(const Customer&);
+	bool operator==(const Customer&) const;
 
 	// Customer functionality.
 	void AddPurchase(const string&, const string&, const float);
+	void RemovePurchaseAtIndex(const int);
+	void RemoveAllPurchases();
+	bool HasPurchases() const;
 	void DisplayData() const;
 	void DisplayAllPurchases() const;
 	void SaveData(ofstream&) const;
@@ -43,6 +48,7 @@ public:
 
 	// Getters & setters.
 	float GetTotalSpending() const;
+	const vector<Purchase>& GetPurchaseVector() const;
 	const string& GetFirstName() const;
 	const string& GetLastName() const;
 	const string& GetStreetAddress() const;

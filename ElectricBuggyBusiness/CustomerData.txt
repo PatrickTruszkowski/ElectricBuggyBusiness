@@ -1,11 +1,11 @@
-Customers (10)	Sorting: Descending Unsorted
+Customers (10)	Sorting: Unsorted
 ________________________________________________________________________________________________________________________________
 Jordan Pacheco
 669 Elliott St.
 Concord, New Hampshire, 03301
 315-815-0873
 
-Account #4991
+Account #5176
 
 	Purchases (2): $4000.00
 	________________________________
@@ -28,7 +28,7 @@ Micheal Rivera
 Miami, Florida, 32801
 321-555-0321
 
-Account #4600
+Account #3547
 
 	Purchases (4): $3720.00
 	________________________________
@@ -63,7 +63,7 @@ Sophia Patel
 Virginia Beach, Virginia, 27601
 919-555-0678
 
-Account #5359
+Account #1464
 
 	Purchases (2): $15500.00
 	________________________________
@@ -86,7 +86,7 @@ Paul Newman
 Newark, New Jersey, 56473
 343-256-7489
 
-Account #5427
+Account #5732
 
 	Purchases (3): $1470.00
 	________________________________
@@ -115,7 +115,7 @@ Steven Davis
 Charlotte, North Carolina, 56103
 676-903-2748
 
-Account #2447
+Account #2255
 
 	Purchases (2): $650.00
 	________________________________
@@ -138,7 +138,7 @@ Lian Lin
 Miami, Florida, 33128
 646-269-1128
 
-Account #8379
+Account #5867
 
 	Purchases (2): $320.00
 	________________________________
@@ -161,7 +161,7 @@ Linda Feng
 Atlanta, Georgia, 30303
 995-451-2170
 
-Account #1094
+Account #4528
 
 	Purchases (3): $1900.00
 	________________________________
@@ -190,7 +190,7 @@ Emily Johnson
 Boston, Massachusetts, 02115
 617-555-0184
 
-Account #1191
+Account #4853
 
 	Purchases (3): $16070.00
 	________________________________
@@ -219,7 +219,7 @@ Stefek Sadowska
 Virginia Beach, Virginia, 23462
 936-912-3380
 
-Account #3860
+Account #314
 
 	Purchases (3): $3320.00
 	________________________________
@@ -248,7 +248,7 @@ Olivia Rademaker
 Charlotte, North Carolina, 28204
 678-543-1530
 
-Account #8631
+Account #7196
 
 	Purchases (4): $16400.00
 	________________________________
