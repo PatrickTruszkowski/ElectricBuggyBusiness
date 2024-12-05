@@ -30,6 +30,7 @@ void UpdateCustomerData(Customer*);
 void AddNewPurchase(Customer*);
 void AddNewPurchases(Customer*);
 void RemoveCustomer(Customer*);
+void RemoveCustomers();
 void RemoveCustomerPurchases(Customer*);
 string GetValidName(bool);
 string GetValidStreetAddress();
@@ -725,8 +726,7 @@ void HandleMainMenuSelection()
         {
             cout << "Remove Customer Data\n";
 
-            DisplayCustomerMenu();
-            RemoveCustomer(HandleCustomerSelection());
+            RemoveCustomers();
         }
 
         system("CLS");
@@ -1471,10 +1471,43 @@ void RemoveCustomer(Customer* customerPtr)
             cout << "\n" << customerName << "'s data successfully removed!\n";
             cout << "________________________________________________________________________________________________________________________________\n\n";
 
-            system("Pause");
-
             return;
         }
+    }
+}
+
+void RemoveCustomers()
+{
+    // Handle customer selection.
+    DisplayCustomerMenu();
+    RemoveCustomer(HandleCustomerSelection());
+
+    // Keep asking for customer removal if customers remain.
+    if (!customerVector.empty())
+    {
+        cout << "________________________________________________________________________________________________________________________________\n";
+        cout << "Remove another customer?:\n\n";
+        cout << "(1)\tYes\n";
+        cout << "(2)\tNo\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+    }
+    else
+    {
+        cout << "________________________________________________________________________________________________________________________________\n";
+        cout << "There are no more customers in the database.\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        return;
+    }
+
+    int choice = GetValidChoice(1, 2);
+
+    if (choice == 1)
+    {
+        system("CLS");
+
+        // Call function recursively.
+        RemoveCustomers();
     }
 }
 
