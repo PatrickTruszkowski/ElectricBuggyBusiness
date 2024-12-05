@@ -32,6 +32,7 @@ void AddNewPurchases(Customer*);
 void RemoveCustomer(const int);
 void RemoveCustomers();
 void RemoveCustomerPurchases(Customer*);
+void RemoveAllPurchases(const int);
 string GetValidName(bool);
 string GetValidStreetAddress();
 string GetValidZipcode();
@@ -437,16 +438,17 @@ void DisplayMainMenu()
     cout << "(12)\tRemove Customer Data\n";
     cout << "(13)\tRemove All Customer Data\n";
     cout << "(14)\tRemove Customer Purchases\n";
-    cout << "(15)\tRemove All Customer Purchases\n\n\n";
+    cout << "(15)\tRemove All Customer Purchases\n";
+    cout << "(16)\tRemove All Purchases\n\n\n";
 
-    cout << "(16)\tExit\n";
+    cout << "(17)\tExit\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void HandleMainMenuSelection()
 {
     // Get a choice in range.
-    int choice = GetValidChoice(1, 16);
+    int choice = GetValidChoice(1, 17);
 
     // Call corresponding menu option.
     switch (choice)
@@ -812,6 +814,86 @@ void HandleMainMenuSelection()
 
         system("CLS");
 
+        {
+            bool repeat = true;
+
+            while (repeat)
+            {
+                if (customerVector.empty())
+                {
+                    cout << "________________________________________________________________________________________________________________________________\n";
+                    cout << "There are no customers in the database.\n";
+                    cout << "________________________________________________________________________________________________________________________________\n\n";
+
+                    repeat = false;
+
+                    system("Pause");
+                }
+                else
+                {
+                    int index = GetCustomerPurchaseIndex();
+
+                    if (index == -1)
+                    {
+                        cout << "________________________________________________________________________________________________________________________________\n";
+                        cout << "Customers have no purchases.\n";
+                        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+                        repeat = false;
+
+                        system("Pause");
+                    }
+                    else
+                    {
+                        Customer* customerPtr = nullptr;
+
+                        cout << "Remove All Purchases\n";
+
+                        DisplayCustomersWithPurchasesMenu(index);
+
+                        customerPtr = HandleCustomerSelection(customerVector.size() - index);
+
+                        customerPtr->DisplayAllPurchases();
+
+                        // Ensure user really wants to remove all purchases.
+                        if (FinalizeChoice("Are you sure you want to remove all purchases?"))
+                        {
+                            cout << "________________________________________________________________________________________________________________________________\n";
+                            cout << "Removing all purchases...\n\n";
+
+                            customerPtr->RemoveAllPurchases();
+
+                            cout << "All purchases successfully removed!\n";
+                            cout << "________________________________________________________________________________________________________________________________\n\n";
+                        }
+
+                        int choice;
+
+                        cout << "________________________________________________________________________________________________________________________________\n";
+                        cout << "Remove all purchases for another customer?:\n\n";
+                        cout << "(1)\tYes\n";
+                        cout << "(2)\tNo\n";
+                        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+                        choice = GetValidChoice(1, 2);
+
+                        if (choice == 2)
+                        {
+                            repeat = false;
+                        }
+
+                        system("CLS");
+                    }
+                }
+            }
+        }
+        system("CLS");
+
+        break;
+    case 16: // Remove all purchases.
+
+        system("CLS");
+
         if (customerVector.empty())
         {
             cout << "________________________________________________________________________________________________________________________________\n";
@@ -822,8 +904,10 @@ void HandleMainMenuSelection()
         }
         else
         {
+            // Get the index of where the first customer with a purchase was found.
             int index = GetCustomerPurchaseIndex();
 
+            // Index of -1 mean no customer has any purchases.
             if (index == -1)
             {
                 cout << "________________________________________________________________________________________________________________________________\n";
@@ -834,23 +918,14 @@ void HandleMainMenuSelection()
             }
             else
             {
-                Customer* customerPtr = nullptr;
-
-                cout << "Remove All Purchases\n";
-
-                DisplayCustomersWithPurchasesMenu(index);
-
-                customerPtr = HandleCustomerSelection(customerVector.size() - index);
-
-                // Ensure user really wants to remove all purchases.
                 if (FinalizeChoice("Are you sure you want to remove all purchases?"))
                 {
                     cout << "________________________________________________________________________________________________________________________________\n";
                     cout << "Removing all purchases...\n\n";
 
-                    customerPtr->RemoveAllPurchases();
+                    RemoveAllPurchases(index);
 
-                    cout << "All purchases successfully removed!\n";
+                    cout << "All purchases removed successfully!\n";
                     cout << "________________________________________________________________________________________________________________________________\n\n";
 
                     system("Pause");
@@ -861,7 +936,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 16: // Exit.
+    case 17: // Exit.
 
         isRunning = false;
 
@@ -1545,6 +1620,20 @@ void RemoveCustomerPurchases(Customer* customerPtr)
 
         // Call function recursively.
         RemoveCustomerPurchases(customerPtr);
+    }
+}
+
+void RemoveAllPurchases(const int index)
+{
+    // Cycle through the customer vector and remove all purchases from each customer.
+    for (int i = index; i < customerVector.size(); ++i)
+    {
+        Customer& currentCustomer = customerVector.at(i);
+
+        if (currentCustomer.HasPurchases())
+        {
+            currentCustomer.RemoveAllPurchases();
+        }
     }
 }
 
