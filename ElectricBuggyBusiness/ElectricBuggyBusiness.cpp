@@ -21,7 +21,7 @@ void DisplayCustomersWithPurchasesMenu(int);
 void DisplayCityStateMenu();
 void HandleCustomerSorting();
 void SortCustomerVector();
-Customer* HandleCustomerSelection(int range = -1);
+Customer* HandleCustomerSelection(int = -1);
 void DisplayAllCustomerData();
 void AddNewCustomerData();
 void AddNewCustomersData();
