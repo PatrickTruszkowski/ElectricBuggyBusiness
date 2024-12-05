@@ -16,22 +16,27 @@ void ExportCustomerData();
 void DisplayMainMenu();
 void HandleMainMenuSelection();
 void DisplayCustomerMenu();
+void DisplayCustomerPurchasesMenu(Customer*);
+void DisplayCustomersWithPurchasesMenu(int);
 void DisplayCityStateMenu();
 void HandleCustomerSorting();
 void SortCustomerVector();
-Customer* HandleCustomerSelection();
+Customer* HandleCustomerSelection(int range = -1);
 void DisplayAllCustomerData();
 void AddNewCustomerData();
 void AddNewCustomersData();
+void CopyCustomerData(Customer*);
 void UpdateCustomerData(Customer*);
 void AddNewPurchase(Customer*);
 void AddNewPurchases(Customer*);
 void RemoveCustomer(Customer*);
+void RemoveCustomerPurchases(Customer*);
 string GetValidName(bool);
 string GetValidStreetAddress();
 string GetValidZipcode();
 string GetValidPhoneNumber();
 string GetValidDate();
+int GetCustomerPurchaseIndex();
 bool IsLeapYear(int);
 int DaysInMonth(int, int);
 int GetValidChoice(int, int, bool = true);
@@ -55,7 +60,7 @@ int main()
     srand(time(0));
     cout << fixed << setprecision(2);
 
-    // Initialize maps with key value pairs and run intro sequence.
+    // Initialize maps with key value pairs and run intro.
     InitializeMaps();
     Introduce();
 
@@ -288,7 +293,7 @@ void LoadDataFile(const string& fileName)
         // If the purchase vector has purchases, add it to the current customer.
         if (!purchaseVector.empty())
         {
-            for (Purchase& purchase : purchaseVector)
+            for (const Purchase& purchase : purchaseVector)
             {
                 customer.AddPurchase(purchase.GetItemName(), purchase.GetPurchaseDate(), purchase.GetItemCost());
             }
@@ -316,7 +321,7 @@ void SaveAllCustomerData()
     cout << "Saving...\n\n";
 
     // Cycle through each customer and tell it to save its data.
-    for (Customer& customer : customerVector)
+    for (const Customer& customer : customerVector)
     {
         customer.SaveData(outputFile);
 
@@ -417,25 +422,30 @@ void DisplayMainMenu()
         cout << "(4)\tAdd New Customer Data\n";
     }
 
-    cout << "(5)\tAdd New Purchases\n\n";
+    cout << "(5)\tAdd New Purchases\n";
+    cout << "(6)\tCopy Customer Data\n\n";
 
     cout << "Organization\n";
-    cout << "(6)\tSort Customer Data\n";
-    cout << "(7)\tUpdate Customer Data\n";
-    cout << "(8)\tSave All Customer Data\n";
-    cout << "(9)\tLoad Saved Customer Data\n";
-    cout << "(10)\tExport Customer Data\n";
-    cout << "(11)\tRemove Customer Data\n";
-    cout << "(12)\tRemove All Customer Data\n\n\n";
+    cout << "(7)\tSort Customer Data\n";
+    cout << "(8)\tUpdate Customer Data\n";
+    cout << "(9)\tSave All Customer Data\n";
+    cout << "(10)\tLoad Saved Customer Data\n";
+    cout << "(11)\tExport Customer Data\n\n";
 
-    cout << "(13)\tExit\n";
+    cout << "Remove Data\n";
+    cout << "(12)\tRemove Customer Data\n";
+    cout << "(13)\tRemove All Customer Data\n";
+    cout << "(14)\tRemove Customer Purchases\n";
+    cout << "(15)\tRemove All Customer Purchases\n\n\n";
+
+    cout << "(16)\tExit\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
 void HandleMainMenuSelection()
 {
     // Get a choice in range.
-    int choice = GetValidChoice(1, 13);
+    int choice = GetValidChoice(1, 16);
 
     // Call corresponding menu option.
     switch (choice)
@@ -545,7 +555,32 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 6: // Sorting options for customers.
+    case 6: // Copy customer data.
+
+        system("CLS");
+
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+        else
+        {
+            cout << "Copy A Customer\n";
+
+            DisplayCustomerMenu();
+            CopyCustomerData(HandleCustomerSelection());
+
+            system("Pause");
+        }
+
+        system("CLS");
+
+        break;
+    case 7: // Sorting options for customers.
 
         system("CLS");
 
@@ -569,7 +604,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 7: // Update customer data.
+    case 8: // Update customer data.
 
         system("CLS");
 
@@ -594,7 +629,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 8: // Save all customer data.
+    case 9: // Save all customer data.
 
         system("CLS");
 
@@ -616,7 +651,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 9: // Load customer data.
+    case 10: // Load customer data.
 
         system("CLS");
 
@@ -652,7 +687,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 10:
+    case 11: // Export customer data.
 
         system("CLS");
 
@@ -674,7 +709,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 11: // Remove customer.
+    case 12: // Remove customer.
 
         system("CLS");
 
@@ -697,7 +732,7 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 12: // Remove all customer data.
+    case 13: // Remove all customer data.
 
         system("CLS");
 
@@ -728,7 +763,105 @@ void HandleMainMenuSelection()
         system("CLS");
 
         break;
-    case 13: // Exit.
+    case 14: // Remove customer's purchases.
+
+        system("CLS");
+
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+        else
+        {
+            // Get the index of where the first customer with a purchase was found.
+            int index = GetCustomerPurchaseIndex();
+
+            // Index of -1 mean no customer has any purchases.
+            if (index == -1)
+            {
+                cout << "________________________________________________________________________________________________________________________________\n";
+                cout << "Customers have no purchases.\n";
+                cout << "________________________________________________________________________________________________________________________________\n\n";
+
+                system("Pause");
+            }
+            else
+            {
+                Customer* customerPtr = nullptr;
+
+                cout << "Remove Purchases\n";
+
+                // Display all customers that have purchases.
+                DisplayCustomersWithPurchasesMenu(index);
+
+                // Let user select customer to remove purchases from.
+                customerPtr = HandleCustomerSelection(customerVector.size() - index);
+
+                RemoveCustomerPurchases(customerPtr);
+            }
+        }
+
+        system("CLS");
+
+        break;
+    case 15: // Remove all customer's purchases.
+
+        system("CLS");
+
+        if (customerVector.empty())
+        {
+            cout << "________________________________________________________________________________________________________________________________\n";
+            cout << "There are no customers in the database.\n";
+            cout << "________________________________________________________________________________________________________________________________\n\n";
+
+            system("Pause");
+        }
+        else
+        {
+            int index = GetCustomerPurchaseIndex();
+
+            if (index == -1)
+            {
+                cout << "________________________________________________________________________________________________________________________________\n";
+                cout << "Customers have no purchases.\n";
+                cout << "________________________________________________________________________________________________________________________________\n\n";
+
+                system("Pause");
+            }
+            else
+            {
+                Customer* customerPtr = nullptr;
+
+                cout << "Remove All Purchases\n";
+
+                DisplayCustomersWithPurchasesMenu(index);
+
+                customerPtr = HandleCustomerSelection(customerVector.size() - index);
+
+                // Ensure user really wants to remove all purchases.
+                if (FinalizeChoice("Are you sure you want to remove all purchases?"))
+                {
+                    cout << "________________________________________________________________________________________________________________________________\n";
+                    cout << "Removing all purchases...\n\n";
+
+                    customerPtr->RemoveAllPurchases();
+
+                    cout << "All purchases successfully removed!\n";
+                    cout << "________________________________________________________________________________________________________________________________\n\n";
+
+                    system("Pause");
+                }
+            }
+        }
+
+        system("CLS");
+
+        break;
+    case 16: // Exit.
 
         isRunning = false;
 
@@ -749,6 +882,54 @@ void DisplayCustomerMenu()
         cout << "(" << count << ")\t" << customer.GetFirstName() << " " << customer.GetLastName() << "\n";
 
         count++;
+    }
+
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+}
+
+void DisplayCustomerPurchasesMenu(Customer* customerPtr)
+{
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Select a purchase:\n\n";
+
+    // Cache customer's purchase vector.
+    const vector<Purchase>& purchaseVector = customerPtr->GetPurchaseVector();
+
+    int count = 1;
+
+    // Display all customer's purchases in a menu fashion.
+    for (const Purchase& purchase : purchaseVector)
+    {
+        cout << "(" << count << ")";
+        cout << "\t________________________________\n";
+        cout << "\t" << purchase.GetItemName() << ": $" << purchase.GetItemCost() << "\n\n";
+        cout << "\t" << purchase.GetPurchaseDate() << "\n";
+        cout << "\t________________________________\n\n";
+
+        count++;
+    }
+
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+}
+
+void DisplayCustomersWithPurchasesMenu(int index)
+{
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Select a customer:\n\n";
+
+    int count = 1;
+
+    // Display all customers with purchases starting at the index that the first customer was found.
+    for (int i = index; i < customerVector.size(); i++)
+    {
+        const Customer& currentCustomer = customerVector.at(i);
+
+        if (currentCustomer.HasPurchases())
+        {
+            cout << "(" << count << ")\t" << currentCustomer.GetFirstName() << " " << currentCustomer.GetLastName() << "\n";
+
+            count++;
+        }
     }
 
     cout << "________________________________________________________________________________________________________________________________\n\n";
@@ -916,12 +1097,28 @@ void SortCustomerVector()
     }
 }
 
-Customer* HandleCustomerSelection()
+Customer* HandleCustomerSelection(int range)
 {
-    int choice = GetValidChoice(1, customerVector.size());
+    int choice;
 
-    // Return the memory address of the selected customer.
-    return &customerVector.at(choice - 1);
+    // Default the range to the total customer amount.
+    if (range <= -1)
+    {
+        range = customerVector.size();
+    }
+
+    choice = GetValidChoice(1, range);
+
+    if (range <= -1)
+    {
+        // Return the memory address of the selected customer.
+        return &customerVector.at(choice - 1);
+    }
+    else
+    {
+        // Return the memory address of the selected customer with respect to the range offset.
+        return &customerVector.at((customerVector.size() - range) + (choice - 1));
+    }
 }
 
 void DisplayAllCustomerData()
@@ -1047,6 +1244,24 @@ void AddNewCustomersData()
     }
 }
 
+void CopyCustomerData(Customer* customerPtr)
+{
+    cout << "________________________________________________________________________________________________________________________________\n";
+    cout << "Copying " << customerPtr->GetFirstName() << " " << customerPtr->GetLastName() << "'s data...\n\n";
+
+    // Create a customer copy from the selected customer.
+    Customer customer(*customerPtr);
+
+    // Append copy to the end of the name to distinguish.
+    customer.SetLastName(customer.GetLastName() + " Copy");
+
+    // Insert the copy at the beginning of the database.
+    customerVector.insert(customerVector.begin(), customer);
+
+    cout << customer.GetFirstName() << " " << customer.GetLastName() << "'s data successfully copied!\n";
+    cout << "________________________________________________________________________________________________________________________________\n\n";
+}
+
 void UpdateCustomerData(Customer* customerPtr)
 {
     // Show selected customer's data.
@@ -1071,7 +1286,27 @@ void UpdateCustomerData(Customer* customerPtr)
 
         cout << "________________________________________________________________________________________________________________________________\n";
 
-        customerPtr->SetFirstName(GetValidName(true));
+        {
+            string firstName = GetValidName(true);
+
+            // Cache customer's first and last name.
+            const string& customerFirstName = customerPtr->GetFirstName();
+            const string& customerLastName = customerPtr->GetLastName();
+
+            // Compare each customer in the database to see if they already exist.
+            for (const Customer& customer : customerVector)
+            {
+                if (customer.GetFirstName() == customerFirstName && customer.GetLastName() == customerLastName)
+                {
+                    cout << "Customer already exists.\n\n";
+
+                    return;
+                }
+            }
+
+            // If they don't already exist, change the name to the new one.
+            customerPtr->SetFirstName(firstName);
+        }
 
         cout << "\nCustomer's first name was changed to " << customerPtr->GetFirstName() << ".\n";
         cout << "________________________________________________________________________________________________________________________________\n\n";
@@ -1081,7 +1316,24 @@ void UpdateCustomerData(Customer* customerPtr)
 
         cout << "________________________________________________________________________________________________________________________________\n";
 
-        customerPtr->SetLastName(GetValidName(false));
+        {
+            string lastName = GetValidName(false);
+
+            const string& customerFirstName = customerPtr->GetFirstName();
+            const string& customerLastName = customerPtr->GetLastName();
+
+            for (const Customer& customer : customerVector)
+            {
+                if (customer.GetFirstName() == customerFirstName && customer.GetLastName() == customerLastName)
+                {
+                    cout << "Customer already exists.\n\n";
+
+                    return;
+                }
+            }
+
+            customerPtr->SetFirstName(lastName);
+        }
 
         cout << "\nCustomer's last name was changed to " << customerPtr->GetLastName() << ".\n";
         cout << "________________________________________________________________________________________________________________________________\n\n";
@@ -1210,7 +1462,7 @@ void RemoveCustomer(Customer* customerPtr)
     }
 
     // Cycle through the customer vector and remove the matching customer.
-    for (Customer& customer : customerVector)
+    for (const Customer& customer : customerVector)
     {
         if (customer == *customerPtr)
         {
@@ -1223,6 +1475,54 @@ void RemoveCustomer(Customer* customerPtr)
 
             return;
         }
+    }
+}
+
+void RemoveCustomerPurchases(Customer* customerPtr)
+{
+    // Display all customer's purchases in a menu fashion.
+    DisplayCustomerPurchasesMenu(customerPtr);
+
+    int choice = GetValidChoice(1, customerPtr->GetPurchaseCount());
+
+    // Ensure user really wants to remove this purchase.
+    if (FinalizeChoice("Are you sure you want to delete this purchase?"))
+    {
+        customerPtr->RemovePurchaseAtIndex(choice - 1);
+    }
+    else
+    {
+        return;
+    }
+
+    // Prompt if user wants to remove another purchase.
+    if (customerPtr->HasPurchases())
+    {
+        cout << "________________________________________________________________________________________________________________________________\n";
+        cout << "Remove another purchase?:\n\n";
+        cout << "(1)\tYes\n";
+        cout << "(2)\tNo\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+    }
+    else // Make sure the customer still has purchases.
+    {
+        cout << "________________________________________________________________________________________________________________________________\n";
+        cout << "Customer has no more purchases.\n";
+        cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        system("Pause");
+
+        return;
+    }
+
+    choice = GetValidChoice(1, 2);
+
+    if (choice == 1)
+    {
+        system("CLS");
+
+        // Call function recursively.
+        RemoveCustomerPurchases(customerPtr);
     }
 }
 
@@ -1394,6 +1694,25 @@ string GetValidDate()
 
     // Return valid date.
     return date;
+}
+
+int GetCustomerPurchaseIndex()
+{
+    int index = 0;
+
+    // Return the index of where the first customer with a purchase was found.
+    for (const Customer& customer : customerVector)
+    {
+        if (customer.HasPurchases())
+        {
+            return index;
+        }
+
+        index++;
+    }
+
+    // Return -1 if no customer was found.
+    return -1;
 }
 
 bool IsLeapYear(int year)

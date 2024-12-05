@@ -48,7 +48,51 @@ Customer::Customer(const string& firstName, const string& lastName, const string
 	}
 }
 
-bool Customer::operator==(const Customer& otherCustomer)
+Customer::Customer(const Customer& otherCustomer)
+{
+	// Copy all other customer's data to this customer.
+	purchaseVector = otherCustomer.purchaseVector;
+	firstName = otherCustomer.firstName;
+	lastName = otherCustomer.lastName;
+	streetAddress = otherCustomer.streetAddress;
+	cityState = otherCustomer.cityState;
+	zipcode = otherCustomer.zipcode;
+	phoneNumber = otherCustomer.phoneNumber;
+	totalSpendings = otherCustomer.totalSpendings;
+
+	// Generate random account number.
+	accountNumber = rand() % 9999 + 1;
+
+	// Check if no other customers exist yet.
+	if (!customerAccountNumberVector.empty())
+	{
+		bool valid = false;
+
+		while (!valid)
+		{
+			// Cycle through every existing account number and check if it's already created.
+			for (int currentAccountNumber : customerAccountNumberVector)
+			{
+				// If the generated account number was found, generate another number and check again.
+				if (currentAccountNumber == accountNumber)
+				{
+					valid = false;
+
+					accountNumber = rand() % 9999 + 1;
+
+					break;
+				}
+
+				valid = true;
+
+				// Add new account number to the static vector.
+				customerAccountNumberVector.emplace_back(accountNumber);
+			}
+		}
+	}
+}
+
+bool Customer::operator==(const Customer& otherCustomer) const
 {
 	// Two customers are equal if both of their account numbers are the same.
 	return accountNumber == otherCustomer.accountNumber;
@@ -61,6 +105,38 @@ void Customer::AddPurchase(const string& itemName, const string& date, const flo
 
 	// Add the cost of the new purchase to the total spendings.
 	totalSpendings += cost;
+}
+
+void Customer::RemovePurchaseAtIndex(const int index)
+{
+	// Return if customer has no purchases.
+	if (purchaseVector.empty())
+	{
+		return;
+	}
+
+	// Remove the cost of the item being removed from total spendings.
+	totalSpendings -= purchaseVector.at(index).GetItemCost();
+
+	// Remove purchase from vector at index.
+	purchaseVector.erase(purchaseVector.begin() + index);
+}
+
+void Customer::RemoveAllPurchases()
+{
+	// Return if customer has no purchases.
+	if (purchaseVector.empty())
+	{
+		return;
+	}
+
+	purchaseVector.clear();
+}
+
+bool Customer::HasPurchases() const
+{
+	// Customer has purchases if the purchase vector isn't empty.
+	return !purchaseVector.empty();
 }
 
 void Customer::DisplayData() const
@@ -178,6 +254,11 @@ void Customer::ExportData(ofstream& outputFile) const
 float Customer::GetTotalSpending() const
 {
 	return totalSpendings;
+}
+
+const vector<Purchase>& Customer::GetPurchaseVector() const
+{
+	return purchaseVector;
 }
 
 const string& Customer::GetFirstName() const
