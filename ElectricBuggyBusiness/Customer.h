@@ -6,6 +6,7 @@
 #include <vector>
 #include <ctime>
 #include <fstream>
+#include <algorithm>
 
 #include "Purchase.h"
 
@@ -27,6 +28,8 @@ private:
 	string phoneNumber;
 	int accountNumber;
 	float totalSpendings;
+
+	void SortPurchases();
 
 public:
 	// Constructor and copy constructor.

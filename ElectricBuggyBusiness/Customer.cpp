@@ -3,6 +3,37 @@
 // Declare customer account number vector.
 vector<int> Customer::customerAccountNumberVector;
 
+void Customer::SortPurchases()
+{
+	// Sort by most recent year.
+	sort(purchaseVector.begin(), purchaseVector.end(), [](const Purchase& purchaseA, const Purchase& purchaseB)
+		{
+			// Get purchaseA date.
+			const string& dateA = purchaseA.GetPurchaseDate();
+			int monthA, dayA, yearA;
+
+			// Split the date into month, day, and year.
+			sscanf_s(dateA.c_str(), "%d/%d/%d", &monthA, &dayA, &yearA);
+
+			const string& dateB = purchaseB.GetPurchaseDate();
+			int monthB, dayB, yearB;
+
+			sscanf_s(dateB.c_str(), "%d/%d/%d", &monthB, &dayB, &yearB);
+
+			// Compare year first, then month, then day.
+			if (yearA != yearB)
+			{
+				return yearA > yearB;
+			}
+			if (monthA != monthB)
+			{
+				return monthA > monthB;
+			}
+
+			return dayA > dayB;
+		});
+}
+
 Customer::Customer(const string& firstName, const string& lastName, const string& streetAddress, const string& cityState, const string& zipcode, const string& phoneNumber)
 {
 	// Set the private member variables.
@@ -105,6 +136,8 @@ void Customer::AddPurchase(const string& itemName, const string& date, const flo
 
 	// Add the cost of the new purchase to the total spendings.
 	totalSpendings += cost;
+
+	SortPurchases();
 }
 
 void Customer::RemovePurchaseAtIndex(const int index)

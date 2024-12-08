@@ -1,6 +1,5 @@
 #include <sstream>
 #include <map>
-#include <algorithm>
 
 #include "Customer.h"
 
@@ -19,7 +18,7 @@ void DisplayCustomerMenu();
 void DisplayCustomerPurchasesMenu(Customer*);
 void DisplayCustomersWithPurchasesMenu(int);
 void DisplayCityStateMenu();
-void HandleCustomerSorting();
+void HandleCustomerSortingSelection();
 void SortCustomerVector();
 Customer* HandleCustomerSelection(int = -1);
 void DisplayAllCustomerData();
@@ -91,12 +90,12 @@ void InitializeMaps()
 {
     // Set key value pairs.
     itemMap["Gordon Buggy"] = 15000.00;
-    itemMap["Electric Motor"] = 3000.00;
-    itemMap["Brakes"] = 500.00;
-    itemMap["Tires"] = 1000.00;
-    itemMap["Shocks"] = 250.00;
-    itemMap["Rims"] = 400.00;
-    itemMap["Lights"] = 70.00;
+    itemMap["Electric Motor"] = 2849.99;
+    itemMap["Brakes"] = 499.99;
+    itemMap["Tires"] = 973.98;
+    itemMap["Shocks"] = 249.99;
+    itemMap["Rims"] = 399.99;
+    itemMap["Lights"] = 68.50;
 
     cityStateMap[1] = "Portland, Maine";
     cityStateMap[2] = "Concord, New Hampshire";
@@ -599,7 +598,7 @@ void HandleMainMenuSelection()
         {
             cout << "Customer Sorting Options\n";
 
-            HandleCustomerSorting();
+            HandleCustomerSortingSelection();
 
             system("Pause");
         }
@@ -1025,7 +1024,7 @@ void DisplayCityStateMenu()
     cout << "________________________________________________________________________________________________________________________________\n\n";
 }
 
-void HandleCustomerSorting()
+void HandleCustomerSortingSelection()
 {
     // Display sorting base menu.
     cout << "________________________________________________________________________________________________________________________________\n";
@@ -1033,9 +1032,11 @@ void HandleCustomerSorting()
     cout << "(1)\tAccount Number\n";
     cout << "(2)\tPurchase Count\n";
     cout << "(3)\tTotal Spendings\n";
+    cout << "(4)\tFirst Name\n";
+    cout << "(5)\tLast Name\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
 
-    sortingChoice = GetValidChoice(1, 3);
+    sortingChoice = GetValidChoice(1, 5);
 
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Select an order:\n\n";
@@ -1048,7 +1049,7 @@ void HandleCustomerSorting()
     cout << "________________________________________________________________________________________________________________________________\n";
     cout << "Sorting...\n\n";
 
-    // Bubble sort customers.
+    // Sort customers.
     SortCustomerVector();
 
     cout << "Sorting complete!\n";
@@ -1057,7 +1058,7 @@ void HandleCustomerSorting()
 
 void SortCustomerVector()
 {
-    // Bubble sort based on sorting choice.
+    // Sort based on sorting choice.
     switch (sortingChoice)
     {
     case 1: // Sort based on account number.
@@ -1065,35 +1066,17 @@ void SortCustomerVector()
         // Sort in ascending order.
         if (sortingOrder == 1)
         {
-            for (unsigned int i = 0; i < customerVector.size(); ++i)
-            {
-                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
                 {
-                    if (customerVector.at(j).GetAccountNumber() > customerVector.at(j + 1).GetAccountNumber())
-                    {
-                        Customer smallerCustomer = customerVector.at(j + 1);
-
-                        customerVector.at(j + 1) = customerVector.at(j);
-                        customerVector.at(j) = smallerCustomer;
-                    }
-                }
-            }
+                    return customerA.GetAccountNumber() < customerB.GetAccountNumber();
+                });
         }
         else // Sort in descending order.
         {
-            for (unsigned int i = 0; i < customerVector.size(); ++i)
-            {
-                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
                 {
-                    if (customerVector.at(j).GetAccountNumber() < customerVector.at(j + 1).GetAccountNumber())
-                    {
-                        Customer biggerCustomer = customerVector.at(j + 1);
-
-                        customerVector.at(j + 1) = customerVector.at(j);
-                        customerVector.at(j) = biggerCustomer;
-                    }
-                }
-            }
+                    return customerA.GetAccountNumber() > customerB.GetAccountNumber();
+                });
         }
 
         break;
@@ -1101,35 +1084,17 @@ void SortCustomerVector()
 
         if (sortingOrder == 1)
         {
-            for (unsigned int i = 0; i < customerVector.size(); ++i)
-            {
-                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
                 {
-                    if (customerVector.at(j).GetPurchaseCount() > customerVector.at(j + 1).GetPurchaseCount())
-                    {
-                        Customer smallerCustomer = customerVector.at(j + 1);
-
-                        customerVector.at(j + 1) = customerVector.at(j);
-                        customerVector.at(j) = smallerCustomer;
-                    }
-                }
-            }
+                    return customerA.GetPurchaseCount() < customerB.GetPurchaseCount();
+                });
         }
         else
         {
-            for (unsigned int i = 0; i < customerVector.size(); ++i)
-            {
-                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
                 {
-                    if (customerVector.at(j).GetPurchaseCount() < customerVector.at(j + 1).GetPurchaseCount())
-                    {
-                        Customer biggerCustomer = customerVector.at(j + 1);
-
-                        customerVector.at(j + 1) = customerVector.at(j);
-                        customerVector.at(j) = biggerCustomer;
-                    }
-                }
-            }
+                    return customerA.GetPurchaseCount() > customerB.GetPurchaseCount();
+                });
         }
 
         break;
@@ -1137,35 +1102,53 @@ void SortCustomerVector()
 
         if (sortingOrder == 1)
         {
-            for (unsigned int i = 0; i < customerVector.size(); ++i)
-            {
-                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
                 {
-                    if (customerVector.at(j).GetTotalSpending() > customerVector.at(j + 1).GetTotalSpending())
-                    {
-                        Customer smallerCustomer = customerVector.at(j + 1);
-
-                        customerVector.at(j + 1) = customerVector.at(j);
-                        customerVector.at(j) = smallerCustomer;
-                    }
-                }
-            }
+                    return customerA.GetTotalSpending() < customerB.GetTotalSpending();
+                });
         }
         else
         {
-            for (unsigned int i = 0; i < customerVector.size(); ++i)
-            {
-                for (unsigned int j = 0; j < customerVector.size() - 1; ++j)
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
                 {
-                    if (customerVector.at(j).GetTotalSpending() < customerVector.at(j + 1).GetTotalSpending())
-                    {
-                        Customer biggerCustomer = customerVector.at(j + 1);
+                    return customerA.GetTotalSpending() > customerB.GetTotalSpending();
+                });
+        }
 
-                        customerVector.at(j + 1) = customerVector.at(j);
-                        customerVector.at(j) = biggerCustomer;
-                    }
-                }
-            }
+        break;
+    case 4: // Sort based on first name.
+
+        if (sortingOrder == 1)
+        {
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
+                {
+                    return customerA.GetFirstName() < customerB.GetFirstName();
+                });
+        }
+        else
+        {
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
+                {
+                    return customerA.GetFirstName() > customerB.GetFirstName();
+                });
+        }
+
+        break;
+    case 5: // Sort based on last name;
+
+        if (sortingOrder == 1)
+        {
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
+                {
+                    return customerA.GetLastName() < customerB.GetLastName();
+                });
+        }
+        else
+        {
+            sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
+                {
+                    return customerA.GetLastName() > customerB.GetLastName();
+                });
         }
 
         break;
@@ -1227,6 +1210,16 @@ void DisplayAllCustomerData()
         case 3:
 
             cout << "Total Spendings\n";
+
+            break;
+        case 4:
+
+            cout << "First Name\n";
+
+            break;
+        case 5:
+
+            cout << "Last Name\n";
 
             break;
         }
@@ -1374,7 +1367,7 @@ void UpdateCustomerData(Customer* customerPtr)
             // Compare each customer in the database to see if they already exist.
             for (const Customer& customer : customerVector)
             {
-                if (customer.GetFirstName() == customerFirstName && customer.GetLastName() == customerLastName)
+                if (customer.GetFirstName() == firstName && customer.GetLastName() == customerLastName)
                 {
                     cout << "Customer already exists.\n";
                     cout << "________________________________________________________________________________________________________________________________\n\n";
@@ -1403,7 +1396,7 @@ void UpdateCustomerData(Customer* customerPtr)
 
             for (const Customer& customer : customerVector)
             {
-                if (customer.GetFirstName() == customerFirstName && customer.GetLastName() == customerLastName)
+                if (customer.GetFirstName() == customerFirstName && customer.GetLastName() == lastName)
                 {
                     cout << "Customer already exists.\n";
                     cout << "________________________________________________________________________________________________________________________________\n\n";
@@ -1412,7 +1405,7 @@ void UpdateCustomerData(Customer* customerPtr)
                 }
             }
 
-            customerPtr->SetFirstName(lastName);
+            customerPtr->SetLastName(lastName);
         }
 
         cout << "\nCustomer's last name was changed to " << customerPtr->GetLastName() << ".\n";
@@ -1506,6 +1499,8 @@ void AddNewPurchase(Customer* customerPtr)
 
     cout << "\nPurchase of " << itemName << ", $" << cost << " was added to customer " << customerPtr->GetFirstName() << " " << customerPtr->GetLastName() << ".\n";
     cout << "________________________________________________________________________________________________________________________________\n\n";
+
+    customerPtr->DisplayAllPurchases();
 }
 
 void AddNewPurchases(Customer* customerPtr)
@@ -1599,6 +1594,11 @@ void RemoveCustomerPurchases(Customer* customerPtr)
         cout << "________________________________________________________________________________________________________________________________\n";
         cout << "Purchase successfully removed!\n";
         cout << "________________________________________________________________________________________________________________________________\n\n";
+
+        if (customerPtr->HasPurchases())
+        {
+            customerPtr->DisplayAllPurchases();
+        }
     }
     else
     {
