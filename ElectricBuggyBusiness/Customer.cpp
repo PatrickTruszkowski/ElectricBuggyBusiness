@@ -91,8 +91,8 @@ Customer::Customer(const Customer& otherCustomer)
 	phoneNumber = otherCustomer.phoneNumber;
 	totalSpendings = otherCustomer.totalSpendings;
 
-	// Generate random account number.
-	accountNumber = rand() % 9999 + 1;
+	// Copy the customer being copied account number.
+	accountNumber = otherCustomer.accountNumber;
 
 	// Check if no other customers exist yet.
 	if (!customerAccountNumberVector.empty())

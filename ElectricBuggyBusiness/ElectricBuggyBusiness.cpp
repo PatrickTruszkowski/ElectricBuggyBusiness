@@ -1067,16 +1067,16 @@ void SortCustomerVector()
         if (sortingOrder == 1)
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetAccountNumber() < customerB.GetAccountNumber();
-                });
+            {
+                return customerA.GetAccountNumber() < customerB.GetAccountNumber();
+            });
         }
         else // Sort in descending order.
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetAccountNumber() > customerB.GetAccountNumber();
-                });
+            {
+                return customerA.GetAccountNumber() > customerB.GetAccountNumber();
+            });
         }
 
         break;
@@ -1085,16 +1085,16 @@ void SortCustomerVector()
         if (sortingOrder == 1)
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetPurchaseCount() < customerB.GetPurchaseCount();
-                });
+            {
+                return customerA.GetPurchaseCount() < customerB.GetPurchaseCount();
+            });
         }
         else
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetPurchaseCount() > customerB.GetPurchaseCount();
-                });
+            {
+                return customerA.GetPurchaseCount() > customerB.GetPurchaseCount();
+            });
         }
 
         break;
@@ -1103,16 +1103,16 @@ void SortCustomerVector()
         if (sortingOrder == 1)
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetTotalSpending() < customerB.GetTotalSpending();
-                });
+            {
+                return customerA.GetTotalSpending() < customerB.GetTotalSpending();
+            });
         }
         else
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetTotalSpending() > customerB.GetTotalSpending();
-                });
+            {
+                return customerA.GetTotalSpending() > customerB.GetTotalSpending();
+            });
         }
 
         break;
@@ -1121,16 +1121,16 @@ void SortCustomerVector()
         if (sortingOrder == 1)
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetFirstName() < customerB.GetFirstName();
-                });
+            {
+                return customerA.GetFirstName() < customerB.GetFirstName();
+            });
         }
         else
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetFirstName() > customerB.GetFirstName();
-                });
+            {
+                return customerA.GetFirstName() > customerB.GetFirstName();
+            });
         }
 
         break;
@@ -1139,16 +1139,16 @@ void SortCustomerVector()
         if (sortingOrder == 1)
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetLastName() < customerB.GetLastName();
-                });
+            {
+                return customerA.GetLastName() < customerB.GetLastName();
+            });
         }
         else
         {
             sort(customerVector.begin(), customerVector.end(), [](const Customer& customerA, const Customer& customerB)
-                {
-                    return customerA.GetLastName() > customerB.GetLastName();
-                });
+            {
+                return customerA.GetLastName() > customerB.GetLastName();
+            });
         }
 
         break;
